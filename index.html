@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Audio Studio v8.8 - Final</title>
+    <title>Audio Studio v8.9 - Final Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --p: #38bdf8; --bg: #0f172a; }
@@ -21,8 +21,8 @@
 <body>
 <div class="app">
     <aside class="side">
-        <h2>Audio Studio v8.8</h2>
-        <div class="f"><label>Цвет темы:</label><input type="color" id="c" value="#38bdf8"></div>
+        <h2>Audio Studio v8.9</h2>
+        <div class="f"><label>Цвет:</label><input type="color" id="c" value="#38bdf8"></div>
         <div class="f"><label>Фон (URL):</label><input type="text" id="b" value="https://images.unsplash.com/photo-1483354483454-4cd359948304?w=800"></div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div class="f"><label>Ширина:</label><input type="number" id="w" value="350"></div>
@@ -73,9 +73,11 @@
     const a=document.getElementById('au'), t=document.getElementById('t'), b=document.getElementById('pb'), p=document.getElementById('pr'), v=document.getElementById('vl'), 
           s=document.getElementById('ls'), i=document.getElementById('it'), cTime=document.getElementById('cur'), dTime=document.getElementById('dur'), dl=document.getElementById('dl');
     
+    // ПУТИ ЧЕРЕЗ GITHUB PAGES (самый стабильный вариант)
+    const base = "https://irinschensmagen-alt.github.io/audioplayer/audio/";
     const trk = [
-        {n: "Neues Jahr Wunder", u: "https://raw.githubusercontent.com/irinschensmagen-alt/audioplayer/main/audio/Neues%20Jahr%20Wunder.mp3"},
-        {n: "Neujahrsstimmung (1)", u: "https://raw.githubusercontent.com/irinschensmagen-alt/audioplayer/main/audio/Neujahrsstimmung%20(1).mp3"}
+        {n: "Neues Jahr Wunder", u: base + "Neues%20Jahr%20Wunder.mp3"},
+        {n: "Neujahrsstimmung (1)", u: base + "Neujahrsstimmung%20(1).mp3"}
     ];
     let cur=0;
     const fmt=(s)=>Math.floor(s/60)+':'+('0'+Math.floor(s%60)).slice(-2);
@@ -109,7 +111,7 @@
     }
     document.querySelectorAll('input').forEach(i => i.oninput = draw);
     window.onload = draw;
-    function copy() { navigator.clipboard.writeText(window.res); alert("Код для Genially скопирован!"); }
+    function copy() { navigator.clipboard.writeText(window.res); alert("Код скопирован!"); }
 </script>
 </body>
 </html>
