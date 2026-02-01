@@ -204,7 +204,19 @@ button {
 
 <script>
 const audio = document.getElementById('audio');
-const ctx = new (window.AudioContext || window.webkitAudioContext)();
+let ctx;
+let source;
+let panNode;
+
+function initAudioContext(){
+  if(ctx) return;
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  source = ctx.createMediaElementSource(audio);
+  panNode = ctx.createStereoPanner();
+  source.connect(panNode).connect(ctx.destination);
+}
+
+audio.addEventListener('play', initAudioContext);
 const source = ctx.createMediaElementSource(audio);
 const panNode = ctx.createStereoPanner();
 source.connect(panNode).connect(ctx.destination);
@@ -218,24 +230,46 @@ let current = 0;
 let recorder, chunks=[];
 
 const langs = {
-  ru:{player:'Плеер',mixer:'Микшер',playlist:'Плейлист'},
-  en:{player:'Player',mixer:'Mixer',playlist:'Playlist'},
-  de:{player:'Player',mixer:'Mixer',playlist:'Playlist'},
-  fr:{player:'Lecteur',mixer:'Mixeur',playlist:'Playlist'},
-  es:{player:'Reproductor',mixer:'Mezclador',playlist:'Lista'},
-  it:{player:'Lettore',mixer:'Mixer',playlist:'Playlist'},
-  zh:{player:'播放器',mixer:'混音器',playlist:'播放列表'},
-  ar:{player:'مشغل',mixer:'خلاط',playlist:'قائمة'},
-  hi:{player:'प्लेयर',mixer:'मिक्सर',playlist:'सूची'}
+  ru:{player:'Плеер',mixer:'Микшер',playlist:'Плейлист',position:'Позиция воспроизведения',volume:'Громкость',pan:'Панорама',modeTeacher:'Преподаватель',modeStudent:'Ученик'},
+  en:{player:'Player',mixer:'Mixer',playlist:'Playlist',position:'Playback position',volume:'Volume',pan:'Pan',modeTeacher:'Teacher',modeStudent:'Student'},
+  de:{player:'Player',mixer:'Mixer',playlist:'Playlist',position:'Wiedergabeposition',volume:'Lautstärke',pan:'Panorama',modeTeacher:'Lehrer',modeStudent:'Schüler'},
+  fr:{player:'Lecteur',mixer:'Mixeur',playlist:'Playlist',position:'Position de lecture',volume:'Volume',pan:'Panoramique',modeTeacher:'Professeur',modeStudent:'Étudiant'},
+  es:{player:'Reproductor',mixer:'Mezclador',playlist:'Lista',position:'Posición',volume:'Volumen',pan:'Panorama',modeTeacher:'Profesor',modeStudent:'Estudiante'},
+  it:{player:'Lettore',mixer:'Mixer',playlist:'Playlist',position:'Posizione',volume:'Volume',pan:'Panoramica',modeTeacher:'Docente',modeStudent:'Studente'},
+  zh:{player:'播放器',mixer:'混音器',playlist:'播放列表',position:'播放位置',volume:'音量',pan:'声像',modeTeacher:'教师',modeStudent:'学生'},
+  ar:{player:'مشغل',mixer:'خلاط',playlist:'قائمة',position:'موضع التشغيل',volume:'الصوت',pan:'توازن',modeTeacher:'معلم',modeStudent:'طالب'},
+  hi:{player:'प्लेयर',mixer:'मिक्सर',playlist:'सूची',position:'प्ले स्थिति',volume:'आवाज़',pan:'पैन',modeTeacher:'शिक्षक',modeStudent:'छात्र'}
 };
 
 Object.keys(langs).forEach(l=>{
-  lang.innerHTML += `<option value="${l}">${l.toUpperCase()}</option>`;
+  const opt=document.createElement('option');
+  opt.value=l; opt.textContent=l.toUpperCase();
+  lang.appendChild(opt);
 });
+
+lang.onchange=()=>applyLang(lang.value);
+
+function applyLang(l){
+  document.querySelector('[data-i18n="player"]').textContent = langs[l].player;
+  document.querySelector('[data-i18n="mixer"]').textContent = langs[l].mixer;
+  document.querySelector('[data-i18n="playlist"]').textContent = langs[l].playlist;
+  document.querySelector('[data-i18n="position"]').textContent = langs[l].position;
+  document.querySelector('[data-i18n="volume"]').textContent = langs[l].volume;
+  document.querySelector('[data-i18n="pan"]').textContent = langs[l].pan;
+  mode.options[0].textContent = '🎓 ' + langs[l].modeTeacher;
+  mode.options[1].textContent = '👩‍🎓 ' + langs[l].modeStudent;
+}
+
+applyLang('ru');
 
 function seek(sec){ audio.currentTime = Math.max(0, Math.min(audio.duration||0, audio.currentTime + sec)); }
 
-function togglePlay(){ audio.paused ? audio.play() : audio.pause(); }
+function togglePlay(){
+  initAudioContext();
+  audio.paused ? audio.play() : audio.pause();
+}
+
+function seek(){ audio.paused ? audio.play() : audio.pause(); }
 function togglePlaylist(){ playlistEl.style.display = playlistEl.style.display==='block'?'none':'block'; }
 
 function format(t){ if(isNaN(t))return '00:00'; const m=Math.floor(t/60); const s=Math.floor(t%60); return `${m}:${s.toString().padStart(2,'0')}`; }
