@@ -168,14 +168,26 @@ button {
 <div class="cover" id="cover"></div>
 
 <div class="controls">
+<button onclick="seek(-10)">⏪ 10s</button>
 <button onclick="togglePlay()">▶ / ⏸</button>
+<button onclick="seek(10)">⏩ 10s</button>
 <button onclick="togglePlaylist()">📂</button>
 <button id="downloadBtn">⬇</button>
 <button onclick="record()">🎙</button>
-<input type="range" min="0" max="1" step="0.01" onchange="audio.volume=this.value">
 </div>
 
 <input class="timeline" type="range" min="0" value="0" step="0.01" onchange="audio.currentTime=this.value">
+<div class="time" id="time">00:00 / 00:00</div>
+
+<div class="panel" style="margin-top:8px">
+<strong>🎚 Микшер</strong>
+<label>Громкость</label>
+<input type="range" min="0" max="1" step="0.01" value="1" onchange="audio.volume=this.value">
+<label>Панорама (L–R)</label>
+<input type="range" min="-1" max="1" step="0.1" value="0" onchange="panNode.pan.value=this.value">
+</div>
+
+<div class="time" id="duration"></div>
 <div class="time" id="time">00:00 / 00:00</div>
 <div class="playlist" id="playlist"></div>
 <audio id="audio"></audio>
@@ -185,6 +197,10 @@ button {
 
 <script>
 const audio = document.getElementById('audio');
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+const source = ctx.createMediaElementSource(audio);
+const panNode = ctx.createStereoPanner();
+source.connect(panNode).connect(ctx.destination);
 const timeline = document.querySelector('.timeline');
 const playlistEl = document.getElementById('playlist');
 const timeEl = document.getElementById('time');
@@ -210,6 +226,8 @@ Object.keys(langs).forEach(l=>{
   lang.innerHTML += `<option value="${l}">${l.toUpperCase()}</option>`;
 });
 
+function seek(sec){ audio.currentTime = Math.max(0, Math.min(audio.duration||0, audio.currentTime + sec)); }
+
 function togglePlay(){ audio.paused ? audio.play() : audio.pause(); }
 function togglePlaylist(){ playlistEl.style.display = playlistEl.style.display==='block'?'none':'block'; }
 
@@ -219,6 +237,7 @@ audio.ontimeupdate=()=>{
   timeline.max=audio.duration||0;
   timeline.value=audio.currentTime;
   timeEl.textContent = `${format(audio.currentTime)} / ${format(audio.duration)}`;
+  if(audio.duration) duration.textContent = `⏱ Длительность: ${format(audio.duration)}`;
 };
 
 function loadTrack(i){
