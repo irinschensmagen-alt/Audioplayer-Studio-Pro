@@ -3,24 +3,31 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Audio Player Studio</title>
+<title>Audio Player Studio PRO</title>
+
 <style>
 :root {
   --accent: #6cf;
-  --bg1: #ff0080;
-  --bg2: #7928ca;
-  --bg3: #2af598;
+  --bg: #0f0f14;
+  --panel: rgba(255,255,255,0.08);
+  --text: #ffffff;
   --font: 'Inter', system-ui, sans-serif;
+}
+
+[data-theme="light"] {
+  --bg: #f4f6fb;
+  --panel: rgba(0,0,0,0.05);
+  --text: #111;
 }
 
 body {
   margin: 0;
-  font-family: var(--font);
-  color: #fff;
   min-height: 100vh;
-  background: linear-gradient(270deg, var(--bg1), var(--bg2), var(--bg3));
+  font-family: var(--font);
+  color: var(--text);
+  background: linear-gradient(270deg, #ff0080, #7928ca, #2af598);
   background-size: 600% 600%;
-  animation: chameleon 18s ease infinite;
+  animation: chameleon 20s ease infinite;
 }
 
 @keyframes chameleon {
@@ -31,21 +38,21 @@ body {
 
 .wrapper {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 340px 1fr;
   gap: 20px;
   padding: 20px;
 }
 
 .panel {
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  border-radius: 18px;
   padding: 16px;
 }
 
-h2 { margin-top: 0; font-size: 18px; }
+h2 { margin: 0 0 10px; font-size: 18px; }
 label { font-size: 13px; opacity: .85; }
-input, select, button {
+input, select, button, textarea {
   width: 100%;
   margin: 6px 0 14px;
 }
@@ -54,192 +61,210 @@ button {
   background: var(--accent);
   color: #000;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 10px;
-  cursor: pointer;
   font-weight: 600;
+  cursor: pointer;
 }
 
-.player-frame {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+.player-frame { display: flex; justify-content: center; align-items: center; }
 
 .player {
-  background: #111;
-  border-radius: 18px;
+  background: var(--bg);
+  border-radius: 22px;
   padding: 16px;
-  width: var(--w, 420px);
-  height: var(--h, 180px);
-  box-shadow: 0 10px 40px rgba(0,0,0,.5);
+  width: var(--w, 460px);
+  height: var(--h, 320px);
+  box-shadow: 0 20px 50px rgba(0,0,0,.5);
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: 10px;
+  grid-template-rows: 1fr auto auto auto;
+  gap: 12px;
 }
 
 .cover {
   width: 100%;
-  height: 80px;
+  height: 160px;
   background: #222 center/cover no-repeat;
-  border-radius: 12px;
+  border-radius: 18px;
 }
 
 .controls {
   display: flex;
-  gap: 10px;
-  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.controls button { width: auto; padding: 6px 10px; }
+.controls button { padding: 6px 12px; }
 
-.timeline {
-  width: 100%;
-}
+.timeline { width: 100%; }
+
+.time { font-size: 12px; opacity: .7; text-align: right; }
 
 .playlist {
   display: none;
-  background: #000;
-  border-radius: 10px;
-  padding: 6px;
-  max-height: 120px;
+  background: rgba(0,0,0,.3);
+  border-radius: 14px;
+  padding: 8px;
+  max-height: 140px;
   overflow-y: auto;
 }
 
 .playlist div {
   padding: 6px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.playlist div:hover { background: #222; }
-
-iframe-output {
-  white-space: pre-wrap;
-}
-
-textarea { width: 100%; height: 120px; }
+.playlist div:hover { background: rgba(255,255,255,.1); }
 </style>
 </head>
-<body>
+
+<body data-theme="dark">
 
 <div class="wrapper">
 
-  <!-- CONTROL PANEL -->
-  <div class="panel">
-    <h2>🎛 Панель управления</h2>
+<!-- PANEL -->
+<div class="panel">
+<h2>🎛 Audio Player Studio PRO</h2>
 
-    <label>Ширина плеера (px)</label>
-    <input type="number" id="width" value="420">
+<label>🌗 Тема</label>
+<select id="theme">
+  <option value="dark">Dark</option>
+  <option value="light">Light</option>
+</select>
 
-    <label>Высота плеера (px)</label>
-    <input type="number" id="height" value="180">
+<label>🎨 Шаблон плеера</label>
+<select id="template">
+  <option value="classic">Classic</option>
+  <option value="glass">Glass</option>
+  <option value="minimal">Minimal</option>
+</select>
 
-    <label>Цвет акцента</label>
-    <input type="color" id="color" value="#66ccff">
+<label>🌍 Язык интерфейса</label>
+<select id="lang"></select>
 
-    <label>Шрифт</label>
-    <select id="font">
-      <option value="Inter">Inter</option>
-      <option value="Arial">Arial</option>
-      <option value="Georgia">Georgia</option>
-      <option value="Courier New">Courier</option>
-    </select>
+<label>📐 Ширина (px)</label>
+<input type="number" id="width" value="460">
 
-    <label>Заставка плейлиста</label>
-    <input type="file" id="coverUpload" accept="image/*">
+<label>📐 Высота (px)</label>
+<input type="number" id="height" value="320">
 
-    <label>Загрузить аудио</label>
-    <input type="file" id="audioUpload" accept="audio/*" multiple>
+<label>🎯 Акцентный цвет</label>
+<input type="color" id="color" value="#66ccff">
 
-    <button onclick="generateIframe()">📦 Получить iframe</button>
+<label>🖼 Заставка</label>
+<input type="file" id="coverUpload" accept="image/*">
 
-    <label>iframe для Genially</label>
-    <textarea id="iframe"></textarea>
-  </div>
+<label>🎵 Загрузка аудио</label>
+<input type="file" id="audioUpload" accept="audio/*" multiple>
 
-  <!-- PLAYER PREVIEW -->
-  <div class="player-frame">
-    <div class="player" id="player">
-      <div class="cover" id="cover"></div>
+<button onclick="generateIframe()">📦 Получить iframe</button>
+<textarea id="iframe"></textarea>
+</div>
 
-      <div class="controls">
-        <button onclick="togglePlay()">▶ / ⏸</button>
-        <button onclick="togglePlaylist()">📂 Плейлист</button>
-        <button id="downloadBtn">⬇ Скачать</button>
-        <input type="range" min="0" max="1" step="0.01" onchange="audio.volume=this.value">
-      </div>
+<!-- PLAYER -->
+<div class="player-frame">
+<div class="player" id="player">
+<div class="cover" id="cover"></div>
 
-      <input class="timeline" type="range" min="0" value="0" step="0.01" onchange="audio.currentTime=this.value">
+<div class="controls">
+<button onclick="togglePlay()">▶ / ⏸</button>
+<button onclick="togglePlaylist()">📂</button>
+<button id="downloadBtn">⬇</button>
+<button onclick="record()">🎙</button>
+<input type="range" min="0" max="1" step="0.01" onchange="audio.volume=this.value">
+</div>
 
-      <div class="playlist" id="playlist"></div>
-
-      <audio id="audio"></audio>
-    </div>
-  </div>
-
+<input class="timeline" type="range" min="0" value="0" step="0.01" onchange="audio.currentTime=this.value">
+<div class="time" id="time">00:00 / 00:00</div>
+<div class="playlist" id="playlist"></div>
+<audio id="audio"></audio>
+</div>
+</div>
 </div>
 
 <script>
 const audio = document.getElementById('audio');
 const timeline = document.querySelector('.timeline');
 const playlistEl = document.getElementById('playlist');
+const timeEl = document.getElementById('time');
 const downloadBtn = document.getElementById('downloadBtn');
+const player = document.getElementById('player');
 let tracks = [];
 let current = 0;
+let recorder, chunks=[];
 
-function togglePlay() {
-  audio.paused ? audio.play() : audio.pause();
-}
+const langs = {
+  ru:{play:'Play',list:'Playlist'},
+  en:{play:'Play',list:'Playlist'},
+  de:{play:'Abspielen',list:'Playlist'},
+  fr:{play:'Lecture',list:'Playlist'},
+  es:{play:'Reproducir',list:'Lista'},
+  it:{play:'Riproduci',list:'Playlist'},
+  zh:{play:'播放',list:'播放列表'},
+  ar:{play:'تشغيل',list:'قائمة'},
+  hi:{play:'चलाएँ',list:'सूची'}
+};
 
-function togglePlaylist() {
-  playlistEl.style.display = playlistEl.style.display === 'block' ? 'none' : 'block';
-}
-
-audio.addEventListener('timeupdate', () => {
-  timeline.max = audio.duration || 0;
-  timeline.value = audio.currentTime;
+Object.keys(langs).forEach(l=>{
+  lang.innerHTML += `<option value="${l}">${l.toUpperCase()}</option>`;
 });
 
-function loadTrack(i) {
-  current = i;
-  audio.src = tracks[i].url;
-  audio.play();
-  downloadBtn.onclick = () => {
-    const a = document.createElement('a');
-    a.href = tracks[i].url;
-    a.download = tracks[i].name;
-    a.click();
-  };
+function togglePlay(){ audio.paused ? audio.play() : audio.pause(); }
+function togglePlaylist(){ playlistEl.style.display = playlistEl.style.display==='block'?'none':'block'; }
+
+function format(t){ if(isNaN(t))return '00:00'; const m=Math.floor(t/60); const s=Math.floor(t%60); return `${m}:${s.toString().padStart(2,'0')}`; }
+
+audio.ontimeupdate=()=>{
+  timeline.max=audio.duration||0;
+  timeline.value=audio.currentTime;
+  timeEl.textContent = `${format(audio.currentTime)} / ${format(audio.duration)}`;
+};
+
+function loadTrack(i){
+  current=i; audio.src=tracks[i].url; audio.play();
+  downloadBtn.onclick=()=>{const a=document.createElement('a');a.href=tracks[i].url;a.download=tracks[i].name;a.click();};
 }
 
-document.getElementById('audioUpload').onchange = e => {
-  [...e.target.files].forEach(file => {
-    const url = URL.createObjectURL(file);
-    tracks.push({ name: file.name, url });
-    const div = document.createElement('div');
-    div.textContent = file.name;
-    div.onclick = () => loadTrack(tracks.length - 1);
-    playlistEl.appendChild(div);
-  });
-  if (tracks.length && !audio.src) loadTrack(0);
+audioUpload.onchange=e=>{
+  [...e.target.files].forEach(f=>{
+    const url=URL.createObjectURL(f);
+    tracks.push({name:f.name,url});
+    const d=document.createElement('div'); d.textContent=f.name; d.onclick=()=>loadTrack(tracks.length-1);
+    playlistEl.appendChild(d);
+  }); if(tracks.length&&!audio.src)loadTrack(0);
 };
 
-// STYLE CONTROLS
-const player = document.getElementById('player');
+coverUpload.onchange=e=>cover.style.backgroundImage=`url(${URL.createObjectURL(e.target.files[0])})`;
 
-width.oninput = () => player.style.setProperty('--w', width.value + 'px');
-height.oninput = () => player.style.setProperty('--h', height.value + 'px');
-color.oninput = () => document.documentElement.style.setProperty('--accent', color.value);
-font.onchange = () => document.documentElement.style.setProperty('--font', font.value);
+width.oninput=()=>player.style.setProperty('--w',width.value+'px');
+height.oninput=()=>player.style.setProperty('--h',height.value+'px');
+color.oninput=()=>document.documentElement.style.setProperty('--accent',color.value);
 
-coverUpload.onchange = e => {
-  const url = URL.createObjectURL(e.target.files[0]);
-  cover.style.backgroundImage = `url(${url})`;
+theme.onchange=()=>document.body.setAttribute('data-theme',theme.value);
+
+template.onchange=()=>{
+  if(template.value==='minimal') player.style.boxShadow='none';
+  else if(template.value==='glass') player.style.background='rgba(255,255,255,.1)';
+  else player.style.background='var(--bg)';
 };
 
-function generateIframe() {
-  const iframe = `<iframe src=\"${location.href}\" width=\"${width.value}\" height=\"${height.value}\" frameborder=\"0\"></iframe>`;
-  document.getElementById('iframe').value = iframe;
+function generateIframe(){ iframe.value = `<iframe src="${location.href}" width="${width.value}" height="${height.value}" frameborder="0"></iframe>`; }
+
+async function record(){
+  if(!recorder){
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    recorder=new MediaRecorder(stream);
+    recorder.ondataavailable=e=>chunks.push(e.data);
+    recorder.onstop=()=>{
+      const blob=new Blob(chunks,{type:'audio/webm'}); chunks=[];
+      const url=URL.createObjectURL(blob);
+      tracks.push({name:'Recording',url});
+      const d=document.createElement('div'); d.textContent='Recording'; d.onclick=()=>loadTrack(tracks.length-1);
+      playlistEl.appendChild(d);
+    };
+    recorder.start();
+  } else { recorder.stop(); recorder=null; }
 }
 </script>
 </body>
