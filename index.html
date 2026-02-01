@@ -1,85 +1,188 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Audio Studio v9.0 - Safe Mode</title>
-    <style>
-        body { margin: 0; background: #020617; color: #fff; font-family: sans-serif; display: flex; height: 100vh; }
-        .side { width: 320px; background: #0f172a; padding: 20px; border-right: 1px solid #1e293b; }
-        .main { flex: 1; display: flex; align-items: center; justify-content: center; background: #020617; }
-        input { width: 100%; margin: 10px 0 20px; background: #1e293b; border: 1px solid #334155; color: #fff; padding: 8px; border-radius: 5px; }
-        .btn { background: #38bdf8; color: #000; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        #preview { border-radius: 20px; overflow: hidden; background: #000; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Studio EDU — Professional</title>
+<style>
+:root {
+  --radius: 16px;
+  --primary-color: #6c5ce7;
+  --secondary-color: #a29bfe;
+  --bg-light: #f8f9fa;
+  --bg-dark: #2d3436;
+  --text-light: #2d3436;
+  --text-dark: #dfe6e9;
+  --accent-gradient: linear-gradient(135deg, #a29bfe, #6c5ce7);
+}
+body {
+  margin:0;
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  padding:24px;
+  background: var(--bg-light);
+  color: var(--text-light);
+  transition: background 0.3s, color 0.3s;
+}
+body.dark {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+.wrapper {
+  display:grid;
+  grid-template-columns:320px 420px;
+  gap:20px;
+}
+.panel, .player {
+  border-radius: var(--radius);
+  padding:16px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.1);
+  transition: background 0.3s, color 0.3s;
+}
+.panel {
+  background: #ffffffee;
+  backdrop-filter: blur(12px);
+}
+body.dark .panel { background: #2d3436ee; }
+.player {
+  display:grid;
+  gap:12px;
+  backdrop-filter: blur(12px);
+  background: #ffffffee;
+}
+body.dark .player { background: #2d3436ee; }
+h2 { margin:0 0 12px; font-size:19px; }
+label { font-size:12px; opacity:.8; }
+input, select, button, textarea { width:100%; margin:6px 0 12px; font-family:inherit; }
+button { border:none; border-radius:12px; padding:9px; cursor:pointer; background: var(--accent-gradient); color:#fff; font-weight:500; transition: transform 0.2s; }
+button:hover { transform: scale(1.05); }
+.cover { height:160px; border-radius:12px; background:#dfe6e9 center/cover; }
+.controls { display:grid; grid-template-columns:auto auto auto; gap:12px; justify-content:center; }
+.controls button { width:56px; font-size:18px; }
+.time { text-align:center; font-size:12px; }
+.timeline { width:100%; }
+canvas { width:100%; height:70px; border-radius:10px; background:#f0f0f0; }
+body.dark canvas { background:#353839; }
+.playlist { display:none; font-size:13px; border-top:1px dashed #b2bec3; padding-top:8px; }
+.playlist div { padding:6px; border-radius:8px; cursor:pointer; transition: background 0.2s; }
+.playlist div:hover { background: #dfe6e9; }
+body.dark .playlist div:hover { background: #636e72; }
+/* Templates */
+.template1 { background: linear-gradient(135deg,#dfe6e9,#b2bec3,#ffeaa7); color:#2d3436; }
+.template2 { background: linear-gradient(135deg,#fd79a8,#fab1a0,#ffeaa7); color:#2d3436; }
+.template3 { background: linear-gradient(135deg,#74b9ff,#a29bfe,#dfe6e9); color:#2d3436; }
+</style>
 </head>
-<body>
-    <div class="side">
-        <h3>Safe Mode v9.0</h3>
-        <label>Цвет кнопок:</label>
-        <input type="color" id="c" value="#38bdf8">
-        <label>Фон (URL):</label>
-        <input type="text" id="b" value="https://images.unsplash.com/photo-1483354483454-4cd359948304?w=800">
-        <button class="btn" onclick="copy()">СКОПИРОВАТЬ КОД</button>
-    </div>
-    <div class="main"><div id="preview"></div></div>
-
-<script>
-    function draw() {
-        const col = document.getElementById('c').value, bg = document.getElementById('b').value;
-        const playerHTML = `
-<div style="width:350px; height:500px; position:relative; background:url('${bg}') center/cover; color:white; font-family:sans-serif; overflow:hidden;">
-    <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);"></div>
-    <div style="position:relative; z-index:2; padding:30px; text-align:center; height:100%; display:flex; flex-direction:column; box-sizing:border-box;">
-        <div style="display:flex; justify-content:space-between; font-size:24px; margin-bottom:20px;">
-            <span onclick="alert('Список пуст или загружается')" style="cursor:pointer">☰</span>
-            <a id="dl" href="#" download style="color:white; text-decoration:none">⬇</a>
-        </div>
-        <img src="https://raw.githubusercontent.com/irinschensmagen-alt/audioplayer/main/audio/cover.jpg" style="width:160px; height:160px; border-radius:20px; margin:0 auto 20px; border:3px solid ${col}; object-fit:cover;">
-        <div id="t" style="font-weight:bold; font-size:18px; margin-bottom:20px;">Загрузка треков...</div>
-        <div style="display:flex; justify-content:center; gap:30px; font-size:30px; margin-bottom:20px;">
-            <span onclick="prev()" style="cursor:pointer">⏮</span>
-            <span onclick="pp()" id="pbtn" style="cursor:pointer; background:white; color:black; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center;">▶</span>
-            <span onclick="next()" style="cursor:pointer">⏭</span>
-        </div>
-        <input type="range" id="prog" value="0" style="width:100%; accent-color:${col};">
-        <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:5px;">
-            <span id="cur">0:00</span><span id="dur">0:00</span>
-        </div>
-        <audio id="audio" crossorigin="anonymous"></audio>
-    </div>
+<body class="template1">
+<div class="wrapper">
+<div class="panel">
+<h2 id="title">🎛 Audio Studio EDU</h2>
+<label id="langLabel">🌍 Language</label><select id="lang"></select>
+<label id="modeLabel">🎓 Mode</label><select id="mode"><option value="teacher">Teacher</option><option value="student">Student</option><option value="exam">Exam</option></select>
+<label id="templateLabel">🎨 Template</label><select id="template"><option value="template1">Soft Gradient 1</option><option value="template2">Soft Gradient 2</option><option value="template3">Soft Gradient 3</option></select>
+<label id="uploadAudioLabel">🎵 Upload audio</label><input type="file" id="audioUpload" accept="audio/*" multiple>
+<label id="coverLabel">🖼 Cover</label><input type="file" id="coverUpload" accept="image/*">
+<button id="recordBtn">🎙 Record</button>
+<button id="iframeBtn">📦 iframe</button>
+<textarea id="iframe"></textarea>
+<button id="themeBtn">🌗 Toggle Theme</button>
+</div>
+<div class="player">
+<div class="cover" id="cover"></div>
+<div class="controls">
+<button id="back">⏪</button>
+<button id="play">▶</button>
+<button id="fwd">⏩</button>
+</div>
+<div class="time" id="time">00:00 / 00:00</div>
+<input type="range" id="timeline" class="timeline" min="0" value="0" step="0.01">
+<canvas id="viz"></canvas>
+<button id="playlistBtn">📂 Playlist</button>
+<div class="playlist" id="playlist"></div>
+<audio id="audio" preload="metadata"></audio>
+</div>
 </div>
 <script>
-    const a = document.getElementById('audio'), t = document.getElementById('t'), b = document.getElementById('pbtn'), 
-          dl = document.getElementById('dl'), curT = document.getElementById('cur'), durT = document.getElementById('dur'), pr = document.getElementById('prog');
-    const songs = [
-        {n:"Neues Jahr Wunder", u:"https://irinschensmagen-alt.github.io/audioplayer/audio/Neues%20Jahr%20Wunder.mp3"},
-        {n:"Neujahrsstimmung (1)", u:"https://irinschensmagen-alt.github.io/audioplayer/audio/Neujahrsstimmung%20(1).mp3"}
-    ];
-    let idx = 0;
-    function load(i) {
-        idx = i; a.src = songs[idx].u; t.innerText = songs[idx].n; dl.href = songs[idx].u;
-    }
-    window.pp = () => { if(a.paused) { a.play(); b.innerText='⏸'; } else { a.pause(); b.innerText='▶'; } };
-    window.next = () => { idx=(idx+1)%songs.length; load(idx); a.play(); b.innerText='⏸'; };
-    window.prev = () => { idx=(idx-1+songs.length)%songs.length; load(idx); a.play(); b.innerText='⏸'; };
-    a.ontimeupdate = () => {
-        pr.value = (a.currentTime / a.duration) * 100 || 0;
-        const f = (s) => Math.floor(s/60) + ":" + ("0"+Math.floor(s%60)).slice(-2);
-        curT.innerText = f(a.currentTime); durT.innerText = f(a.duration || 0);
-    };
-    pr.oninput = () => a.currentTime = (pr.value / 100) * a.duration;
-    load(0);
-<\/script>`;
-        document.getElementById('preview').innerHTML = `<iframe srcdoc='${playerHTML.replace(/'/g, "&apos;").replace(/<\/script>/g, '<\\/script>')}' width="350" height="500" style="border:none;"></iframe>`;
-        window.res = playerHTML;
-    }
-    document.getElementById('c').oninput = draw;
-    document.getElementById('b').oninput = draw;
-    window.onload = draw;
-    function copy() { 
-        const final = `<iframe srcdoc='${window.res.replace(/'/g, "&apos;").replace(/<\/script>/g, '<\\/script>')}' width="350" height="500" style="border:none; overflow:hidden;" scrolling="no"></iframe>`;
-        navigator.clipboard.writeText(final); alert("Код для Genially скопирован!"); 
-    }
+/* ---------- Languages ---------- */
+const langs={
+ ru:{lang:'Русский',mode:'Режим',upload:'Загрузить аудио',cover:'Обложка',record:'Записать',playlist:'Плейлист',iframe:'iframe'},
+ en:{lang:'English',mode:'Mode',upload:'Upload audio',cover:'Cover',record:'Record',playlist:'Playlist',iframe:'iframe'},
+ de:{lang:'Deutsch',mode:'Modus',upload:'Audio hochladen',cover:'Cover',record:'Aufnehmen',playlist:'Playlist',iframe:'iframe'},
+ fr:{lang:'Français',mode:'Mode',upload:'Télécharger audio',cover:'Couverture',record:'Enregistrer',playlist:'Playlist',iframe:'iframe'},
+ es:{lang:'Español',mode:'Modo',upload:'Subir audio',cover:'Portada',record:'Grabar',playlist:'Lista',iframe:'iframe'},
+ it:{lang:'Italiano',mode:'Modalità',upload:'Carica audio',cover:'Copertina',record:'Registra',playlist:'Playlist',iframe:'iframe'},
+ zh:{lang:'中文',mode:'模式',upload:'上传音频',cover:'封面',record:'录音',playlist:'播放列表',iframe:'iframe'},
+ ar:{lang:'العربية',mode:'الوضع',upload:'رفع صوت',cover:'غلاف',record:'تسجيل',playlist:'قائمة التشغيل',iframe:'iframe'},
+ hi:{lang:'हिन्दी',mode:'मोड',upload:'ऑडियो अपलोड',cover:'कवर',record:'रिकॉर्ड',playlist:'प्लेलिस्ट',iframe:'iframe'}
+};
+/* ---------- Persistence ---------- */
+const save=(k,v)=>localStorage.setItem(k,v);
+const load=k=>localStorage.getItem(k);
+/* ---------- Audio Core ---------- */
+const audio=document.getElementById('audio');
+const playBtn=document.getElementById('play');
+const backBtn=document.getElementById('back');
+const fwdBtn=document.getElementById('fwd');
+const timeline=document.getElementById('timeline');
+const timeEl=document.getElementById('time');
+const playlistEl=document.getElementById('playlist');
+let ctx,source,analyser,mediaRecorder,recordedChunks=[];
+function initAudio(){if(ctx)return;ctx=new (window.AudioContext||window.webkitAudioContext)();source=ctx.createMediaElementSource(audio);analyser=ctx.createAnalyser();analyser.fftSize=256;source.connect(analyser);analyser.connect(ctx.destination);visualize();}
+playBtn.onclick=()=>{initAudio();audio.paused?audio.play():audio.pause();};
+backBtn.onclick=()=>audio.currentTime=Math.max(0,audio.currentTime-5);
+fwdBtn.onclick=()=>audio.currentTime=Math.min(audio.duration||0,audio.currentTime+5);
+/* ---------- Timeline ---------- */
+timeline.oninput=()=>audio.currentTime=timeline.value;
+audio.ontimeupdate=()=>{timeline.max=audio.duration||0;timeline.value=audio.currentTime;timeEl.textContent=`${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;}
+const fmt=t=>isNaN(t)?'00:00':`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
+/* ---------- Uploads ---------- */
+audioUpload.onchange=e=>{[...e.target.files].forEach(f=>{const url=URL.createObjectURL(f);const d=document.createElement('div');d.textContent=f.name;d.onclick=()=>{audio.src=url;audio.play()};playlistEl.appendChild(d);});};
+coverUpload.onchange=e=>cover.style.backgroundImage=`url(${URL.createObjectURL(e.target.files[0])})`;
+function togglePlaylist(){playlistEl.style.display=playlistEl.style.display==='block'?'none':'block';}
+/* ---------- Visualizer ---------- */
+const canvas=document.getElementById('viz'); const c=canvas.getContext('2d');
+function visualize(){requestAnimationFrame(visualize);if(!analyser)return;const d=new Uint8Array(analyser.frequencyBinCount);analyser.getByteFrequencyData(d);c.clearRect(0,0,canvas.width,canvas.height);d.forEach((v,i)=>{c.fillStyle='#6c5ce7';c.fillRect(i*3,canvas.height-v/2,2,v/2);});}
+/* ---------- Recording ---------- */
+const recordBtn=document.getElementById('recordBtn');
+recordBtn.onclick=async()=>{
+ if(!mediaRecorder || mediaRecorder.state==='inactive'){
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  mediaRecorder=new MediaRecorder(stream); recordedChunks=[];
+  mediaRecorder.ondataavailable=e=>{if(e.data.size>0)recordedChunks.push(e.data)};
+  mediaRecorder.onstop=()=>{const blob=new Blob(recordedChunks,{type:'audio/webm'}); const url=URL.createObjectURL(blob); const d=document.createElement('div'); d.textContent='Your Recording'; d.onclick=()=>{audio.src=url; audio.play()}; playlistEl.appendChild(d);};
+  mediaRecorder.start(); recordBtn.textContent='⏹ Stop Recording';
+ } else {mediaRecorder.stop(); recordBtn.textContent='🎙 Record';}
+};
+/* ---------- Modes ---------- */
+mode.value=load('mode')||'teacher';
+mode.onchange=e=>{save('mode',e.target.value);const ex=e.target.value==='exam';backBtn.style.display=fwdBtn.style.display=ex?'none':'inline-block';timeline.disabled=ex;recordBtn.disabled=ex;updateLabels();};
+mode.dispatchEvent(new Event('change'));
+/* ---------- Language Setup ---------- */
+const langSelect=document.getElementById('lang');
+Object.entries(langs).forEach(([k,v])=>{const o=document.createElement('option');o.value=k;o.textContent=v.lang;langSelect.appendChild(o);});
+/* ---------- Parse URL Parameters ---------- */
+const params=new URLSearchParams(window.location.search);
+const urlLang=params.get('lang');
+const urlMode=params.get('mode');
+const urlTemplate=params.get('template');
+langSelect.value=urlLang || load('lang') || navigator.language.slice(0,2) || 'en';
+mode.value=urlMode || load('mode') || 'teacher';
+mode.dispatchEvent(new Event('change'));
+if(urlTemplate && ['template1','template2','template3'].includes(urlTemplate)) document.body.className=urlTemplate;
+/* ---------- Labels Update ---------- */
+langSelect.onchange=()=>{save('lang',langSelect.value);updateLabels();};
+function updateLabels(){const v=langs[langSelect.value]||langs['en']; document.getElementById('langLabel').textContent='🌍 '+v.lang; document.getElementById('modeLabel').textContent='🎓 '+v.mode; document.getElementById('uploadAudioLabel').textContent='🎵 '+v.upload; document.getElementById('coverLabel').textContent='🖼 '+v.cover; recordBtn.textContent='🎙 '+v.record; playlistBtn.textContent='📂 '+v.playlist; iframeBtn.textContent='📦 '+v.iframe;}
+updateLabels();
+/* ---------- Templates ---------- */
+const templateSel=document.getElementById('template');
+templateSel.onchange=e=>{document.body.className=e.target.value;};
+/* ---------- Iframe ---------- */
+iframeBtn.onclick=()=>{iframe.value=`<iframe src="${location.href}" width="420" height="580" frameborder="0"></iframe>`}
+/* ---------- Theme Toggle ---------- */
+const themeBtn=document.getElementById('themeBtn');
+themeBtn.onclick=()=>{document.body.classList.toggle('dark');};
 </script>
 </body>
 </html>
