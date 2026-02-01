@@ -1,85 +1,41 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Audio Studio v9.0 - Safe Mode</title>
-    <style>
-        body { margin: 0; background: #020617; color: #fff; font-family: sans-serif; display: flex; height: 100vh; }
-        .side { width: 320px; background: #0f172a; padding: 20px; border-right: 1px solid #1e293b; }
-        .main { flex: 1; display: flex; align-items: center; justify-content: center; background: #020617; }
-        input { width: 100%; margin: 10px 0 20px; background: #1e293b; border: 1px solid #334155; color: #fff; padding: 8px; border-radius: 5px; }
-        .btn { background: #38bdf8; color: #000; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        #preview { border-radius: 20px; overflow: hidden; background: #000; }
-    </style>
-</head>
-<body>
-    <div class="side">
-        <h3>Safe Mode v9.0</h3>
-        <label>Цвет кнопок:</label>
-        <input type="color" id="c" value="#38bdf8">
-        <label>Фон (URL):</label>
-        <input type="text" id="b" value="https://images.unsplash.com/photo-1483354483454-4cd359948304?w=800">
-        <button class="btn" onclick="copy()">СКОПИРОВАТЬ КОД</button>
-    </div>
-    <div class="main"><div id="preview"></div></div>
-
-<script>
-    function draw() {
-        const col = document.getElementById('c').value, bg = document.getElementById('b').value;
-        const playerHTML = `
-<div style="width:350px; height:500px; position:relative; background:url('${bg}') center/cover; color:white; font-family:sans-serif; overflow:hidden;">
-    <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);"></div>
-    <div style="position:relative; z-index:2; padding:30px; text-align:center; height:100%; display:flex; flex-direction:column; box-sizing:border-box;">
-        <div style="display:flex; justify-content:space-between; font-size:24px; margin-bottom:20px;">
-            <span onclick="alert('Список пуст или загружается')" style="cursor:pointer">☰</span>
-            <a id="dl" href="#" download style="color:white; text-decoration:none">⬇</a>
-        </div>
-        <img src="https://raw.githubusercontent.com/irinschensmagen-alt/audioplayer/main/audio/cover.jpg" style="width:160px; height:160px; border-radius:20px; margin:0 auto 20px; border:3px solid ${col}; object-fit:cover;">
-        <div id="t" style="font-weight:bold; font-size:18px; margin-bottom:20px;">Загрузка треков...</div>
-        <div style="display:flex; justify-content:center; gap:30px; font-size:30px; margin-bottom:20px;">
-            <span onclick="prev()" style="cursor:pointer">⏮</span>
-            <span onclick="pp()" id="pbtn" style="cursor:pointer; background:white; color:black; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center;">▶</span>
-            <span onclick="next()" style="cursor:pointer">⏭</span>
-        </div>
-        <input type="range" id="prog" value="0" style="width:100%; accent-color:${col};">
-        <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:5px;">
-            <span id="cur">0:00</span><span id="dur">0:00</span>
-        </div>
-        <audio id="audio" crossorigin="anonymous"></audio>
-    </div>
-</div>
 <script>
     const a = document.getElementById('audio'), t = document.getElementById('t'), b = document.getElementById('pbtn'), 
           dl = document.getElementById('dl'), curT = document.getElementById('cur'), durT = document.getElementById('dur'), pr = document.getElementById('prog');
+    
+    // ПРЯМЫЕ ССЫЛКИ С ПРОВЕРКОЙ ДОСТУПА
     const songs = [
         {n:"Neues Jahr Wunder", u:"https://irinschensmagen-alt.github.io/audioplayer/audio/Neues%20Jahr%20Wunder.mp3"},
         {n:"Neujahrsstimmung (1)", u:"https://irinschensmagen-alt.github.io/audioplayer/audio/Neujahrsstimmung%20(1).mp3"}
     ];
+    
     let idx = 0;
     function load(i) {
-        idx = i; a.src = songs[idx].u; t.innerText = songs[idx].n; dl.href = songs[idx].u;
+        idx = i; 
+        a.src = songs[idx].u; 
+        t.innerText = songs[idx].n; 
+        dl.href = songs[idx].u;
     }
-    window.pp = () => { if(a.paused) { a.play(); b.innerText='⏸'; } else { a.pause(); b.innerText='▶'; } };
+
+    window.pp = () => { 
+        if(a.paused) { 
+            a.play().then(() => { b.innerText='⏸'; }).catch(() => { alert("Ошибка: файл недоступен на GitHub. Проверьте папку audio!"); });
+        } else { 
+            a.pause(); b.innerText='▶'; 
+        } 
+    };
+
     window.next = () => { idx=(idx+1)%songs.length; load(idx); a.play(); b.innerText='⏸'; };
     window.prev = () => { idx=(idx-1+songs.length)%songs.length; load(idx); a.play(); b.innerText='⏸'; };
+    
     a.ontimeupdate = () => {
         pr.value = (a.currentTime / a.duration) * 100 || 0;
         const f = (s) => Math.floor(s/60) + ":" + ("0"+Math.floor(s%60)).slice(-2);
-        curT.innerText = f(a.currentTime); durT.innerText = f(a.duration || 0);
+        curT.innerText = f(a.currentTime); 
+        durT.innerText = f(a.duration || 0);
     };
+
     pr.oninput = () => a.currentTime = (pr.value / 100) * a.duration;
-    load(0);
-<\/script>`;
-        document.getElementById('preview').innerHTML = `<iframe srcdoc='${playerHTML.replace(/'/g, "&apos;").replace(/<\/script>/g, '<\\/script>')}' width="350" height="500" style="border:none;"></iframe>`;
-        window.res = playerHTML;
-    }
-    document.getElementById('c').oninput = draw;
-    document.getElementById('b').oninput = draw;
-    window.onload = draw;
-    function copy() { 
-        const final = `<iframe srcdoc='${window.res.replace(/'/g, "&apos;").replace(/<\/script>/g, '<\\/script>')}' width="350" height="500" style="border:none; overflow:hidden;" scrolling="no"></iframe>`;
-        navigator.clipboard.writeText(final); alert("Код для Genially скопирован!"); 
-    }
+    
+    // Инициализация
+    window.onload = () => load(0);
 </script>
-</body>
-</html>
