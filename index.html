@@ -3,153 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audio Player Studio — Absolute</title>
-
+<title>Audio Studio EDU</title>
 <style>
 :root{
-  --bg1:#eef2ff;
-  --bg2:#e0f2fe;
-  --bg3:#ede9fe;
-  --card:#ffffffdd;
-  --text:#1f2937;
-  --radius:16px;
+ --bg1:#eef2ff; --bg2:#e0f2fe; --bg3:#ede9fe;
+ --card:#ffffffee; --text:#1f2937; --radius:18px;
 }
-
 body{
-  margin:0;
-  font-family:Inter,system-ui,sans-serif;
-  background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  padding:24px;
-  color:var(--text);
+ margin:0; font-family:Inter,system-ui,sans-serif;
+ background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+ min-height:100vh; display:flex; justify-content:center; padding:24px; color:var(--text);
 }
-
 .wrapper{
-  display:grid;
-  grid-template-columns:300px 380px;
-  gap:20px;
+ display:grid; grid-template-columns:320px 420px; gap:22px;
 }
-
 .panel,.player{
-  background:var(--card);
-  backdrop-filter:blur(12px);
-  border-radius:var(--radius);
-  padding:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.08);
+ background:var(--card); backdrop-filter:blur(14px);
+ border-radius:var(--radius); padding:16px;
+ box-shadow:0 12px 32px rgba(0,0,0,.1);
 }
-
-h2{margin:0 0 10px;font-size:18px}
-label{font-size:12px;opacity:.7}
-input,select,button{width:100%;margin:6px 0 12px}
-
-button{
-  border:none;
-  border-radius:12px;
-  padding:8px;
-  cursor:pointer;
-  background:linear-gradient(135deg,#c7d2fe,#bae6fd);
-}
-
-.player{display:grid;gap:10px}
-.cover{height:120px;border-radius:12px;background:#e5e7eb center/cover}
-
-.controls{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px}
-.time{text-align:center;font-size:12px}
-.timeline{width:100%}
-
-.eq label{font-size:11px}
-.eq input{margin-bottom:6px}
-
-canvas{width:100%;height:60px;border-radius:8px;background:#f8fafc}
-
-.playlist{display:none;font-size:13px;border-top:1px dashed #e5e7eb;padding-top:6px}
-.playlist div{padding:4px;border-radius:6px;cursor:pointer}
-.playlist div:hover{background:#eef2ff}
+h2{margin:0 0 12px; font-size:19px;}
+label{font-size:12px; opacity:.75;}
+input,select,button,textarea{width:100%; margin:6px 0 12px; font-family:inherit;}
+button{border:none; border-radius:14px; padding:9px; cursor:pointer; background:linear-gradient(135deg,#c7d2fe,#bae6fd);}
+.player{display:grid; gap:12px;}
+.cover{height:150px; border-radius:14px; background:#e5e7eb center/cover;}
+.controls{display:grid; grid-template-columns:auto auto auto; gap:10px; justify-content:center;}
+.controls button{width:56px;}
+.time{text-align:center; font-size:12px;}
+.timeline{width:100%;}
+canvas{width:100%; height:70px; border-radius:10px; background:#f8fafc;}
+.playlist{display:none; font-size:13px; border-top:1px dashed #e5e7eb; padding-top:8px;}
+.playlist div{padding:5px; border-radius:8px; cursor:pointer;}
+.playlist div:hover{background:#eef2ff;}
 </style>
 </head>
 <body>
 
 <div class="wrapper">
-
 <div class="panel">
-<h2>🎛 Studio</h2>
-
-<label>🌍 Language</label>
-<select id="lang"></select>
-
+<h2>🎛 Audio Studio EDU</h2>
+<label>🌍 Language</label><select id="lang"></select>
 <label>🎓 Mode</label>
-<select id="mode">
-<option value="teacher">Teacher</option>
-<option value="student">Student</option>
-<option value="exam">Exam</option>
-</select>
-
-<label>🎵 Upload audio</label>
-<input type="file" id="audioUpload" accept="audio/*" multiple>
-
-<label>🖼 Cover</label>
-<input type="file" id="coverUpload" accept="image/*">
-
-<div class="eq">
-<label>🔊 Bass</label><input type="range" min="-10" max="10" value="0" id="bass">
-<label>🔊 Mid</label><input type="range" min="-10" max="10" value="0" id="mid">
-<label>🔊 Treble</label><input type="range" min="-10" max="10" value="0" id="treble">
-</div>
-
+<select id="mode"><option value="teacher">Teacher</option><option value="student">Student</option><option value="exam">Exam</option></select>
+<label>🎵 Upload audio</label><input type="file" id="audioUpload" accept="audio/*" multiple>
+<label>🖼 Cover</label><input type="file" id="coverUpload" accept="image/*">
+<button id="recordBtn">🎙 Record</button>
 <button onclick="generateIframe()">📦 iframe</button>
 <textarea id="iframe"></textarea>
 </div>
 
 <div class="player">
 <div class="cover" id="cover"></div>
-
 <div class="controls">
-<button id="back" onclick="seek(-5)">⏪</button>
-<button onclick="togglePlay()">▶ / ⏸</button>
-<button id="fwd" onclick="seek(5)">⏩</button>
+<button id="back">⏪</button>
+<button id="play">▶</button>
+<button id="fwd">⏩</button>
 </div>
-
 <div class="time" id="time">00:00 / 00:00</div>
-<input class="timeline" id="timeline" type="range" min="0" value="0" step="0.01">
-
+<input type="range" id="timeline" class="timeline" min="0" value="0" step="0.01">
 <canvas id="viz"></canvas>
-
 <button onclick="togglePlaylist()">📂 Playlist</button>
 <div class="playlist" id="playlist"></div>
-
-<audio id="audio" crossorigin="anonymous"></audio>
+<audio id="audio" preload="metadata"></audio>
 </div>
 
 </div>
 
 <script>
-/* ---------- state + persistence ---------- */
-const store=k=>localStorage.getItem(k);
+/* ---------- persistence ---------- */
 const save=(k,v)=>localStorage.setItem(k,v);
+const load=k=>localStorage.getItem(k);
 
-/* ---------- audio ---------- */
+/* ---------- audio core ---------- */
 const audio=document.getElementById('audio');
+const playBtn=document.getElementById('play');
+const backBtn=document.getElementById('back');
+const fwdBtn=document.getElementById('fwd');
 const timeline=document.getElementById('timeline');
 const timeEl=document.getElementById('time');
 const playlistEl=document.getElementById('playlist');
-let ctx,analyser,source;
+let ctx,source,analyser,mediaRecorder,recordedChunks=[];
 
 function initAudio(){
  if(ctx) return;
  ctx=new (window.AudioContext||window.webkitAudioContext)();
  source=ctx.createMediaElementSource(audio);
- analyser=ctx.createAnalyser();
- analyser.fftSize=256;
- source.connect(analyser);
- analyser.connect(ctx.destination);
- setupEQ();
+ analyser=ctx.createAnalyser(); analyser.fftSize=256;
+ source.connect(analyser); analyser.connect(ctx.destination);
  visualize();
 }
 
-function togglePlay(){initAudio();audio.paused?audio.play():audio.pause();}
-function seek(s){audio.currentTime=Math.max(0,Math.min(audio.duration||0,audio.currentTime+s));}
+playBtn.onclick=()=>{initAudio(); audio.paused?audio.play():audio.pause();};
+backBtn.onclick=()=>audio.currentTime=Math.max(0,audio.currentTime-5);
+fwdBtn.onclick=()=>audio.currentTime=Math.min(audio.duration||0,audio.currentTime+5);
 
 /* ---------- timeline ---------- */
 timeline.oninput=()=>audio.currentTime=timeline.value;
@@ -158,68 +105,67 @@ audio.ontimeupdate=()=>{
  timeline.value=audio.currentTime;
  timeEl.textContent=`${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;
 };
-
 const fmt=t=>isNaN(t)?'00:00':`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
 
-/* ---------- playlist ---------- */
+/* ---------- uploads ---------- */
 audioUpload.onchange=e=>{
  [...e.target.files].forEach(f=>{
   const url=URL.createObjectURL(f);
   const d=document.createElement('div');
   d.textContent=f.name;
-  d.onclick=()=>{audio.src=url;togglePlay()};
+  d.onclick=()=>{audio.src=url; audio.play()};
   playlistEl.appendChild(d);
  });
 };
-
-function togglePlaylist(){playlistEl.style.display=playlistEl.style.display==='block'?'none':'block'}
 coverUpload.onchange=e=>cover.style.backgroundImage=`url(${URL.createObjectURL(e.target.files[0])})`;
-
-/* ---------- EQ ---------- */
-let bassF,midF,trebleF;
-function setupEQ(){
- bassF=ctx.createBiquadFilter();bassF.type='lowshelf';bassF.frequency.value=200;
- midF=ctx.createBiquadFilter();midF.type='peaking';midF.frequency.value=1000;
- trebleF=ctx.createBiquadFilter();trebleF.type='highshelf';trebleF.frequency.value=3000;
- source.disconnect();
- source.connect(bassF);bassF.connect(midF);midF.connect(trebleF);trebleF.connect(analyser);
- analyser.connect(ctx.destination);
- bass.oninput=e=>bassF.gain.value=e.target.value;
- mid.oninput=e=>midF.gain.value=e.target.value;
- treble.oninput=e=>trebleF.gain.value=e.target.value;
-}
+function togglePlaylist(){playlistEl.style.display=playlistEl.style.display==='block'?'none':'block'}
 
 /* ---------- visualizer ---------- */
-const canvas=document.getElementById('viz');
-const c=canvas.getContext('2d');
-function visualize(){
- requestAnimationFrame(visualize);
- const data=new Uint8Array(analyser.frequencyBinCount);
- analyser.getByteFrequencyData(data);
- c.clearRect(0,0,canvas.width,canvas.height);
- data.forEach((v,i)=>{
-  c.fillStyle='#a5b4fc';
-  c.fillRect(i*3,canvas.height-v/2,2,v/2);
- });
-}
+const canvas=document.getElementById('viz'); const c=canvas.getContext('2d');
+function visualize(){requestAnimationFrame(visualize); if(!analyser)return; const d=new Uint8Array(analyser.frequencyBinCount); analyser.getByteFrequencyData(d); c.clearRect(0,0,canvas.width,canvas.height); d.forEach((v,i)=>{c.fillStyle='#a5b4fc'; c.fillRect(i*3,canvas.height-v/2,2,v/2)})}
+
+/* ---------- recording ---------- */
+const recordBtn=document.getElementById('recordBtn');
+recordBtn.onclick=async()=>{
+ if(!mediaRecorder || mediaRecorder.state==='inactive'){
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  mediaRecorder=new MediaRecorder(stream);
+  recordedChunks=[];
+  mediaRecorder.ondataavailable=e=>{if(e.data.size>0)recordedChunks.push(e.data)};
+  mediaRecorder.onstop=()=>{
+   const blob=new Blob(recordedChunks,{type:'audio/webm'});
+   const url=URL.createObjectURL(blob);
+   const d=document.createElement('div');
+   d.textContent='Your Recording';
+   d.onclick=()=>{audio.src=url; audio.play()};
+   playlistEl.appendChild(d);
+  };
+  mediaRecorder.start();
+  recordBtn.textContent='⏹ Stop Recording';
+ } else {
+  mediaRecorder.stop();
+  recordBtn.textContent='🎙 Record';
+ }
+};
 
 /* ---------- modes ---------- */
+mode.value=load('mode')||'teacher';
 mode.onchange=e=>{
  save('mode',e.target.value);
- const exam=e.target.value==='exam';
- back.style.display=fwd.style.display=exam?'none':'inline-block';
- timeline.disabled=exam;
+ const ex=e.target.value==='exam';
+ backBtn.style.display=fwdBtn.style.display=ex?'none':'inline-block';
+ timeline.disabled=ex;
+ recordBtn.disabled=ex;
 };
+mode.dispatchEvent(new Event('change'));
 
 /* ---------- languages ---------- */
 const langs={ru:'Русский',en:'English',de:'Deutsch',fr:'Français',es:'Español',it:'Italiano',zh:'中文',ar:'العربية',hi:'हिन्दी'};
-Object.entries(langs).forEach(([k,v])=>{const o=document.createElement('option');o.value=k;o.textContent=v;lang.appendChild(o)});
-lang.value=store('lang')||navigator.language.slice(0,2)||'en';
+Object.entries(langs).forEach(([k,v])=>{const o=document.createElement('option'); o.value=k; o.textContent=v; lang.appendChild(o);});
+lang.value=load('lang')||navigator.language.slice(0,2)||'en';
 lang.onchange=e=>save('lang',e.target.value);
-mode.value=store('mode')||'teacher';
-mode.dispatchEvent(new Event('change'));
 
-function generateIframe(){iframe.value=`<iframe src=\"${location.href}\" width=\"380\" height=\"520\" frameborder=\"0\"></iframe>`}
+function generateIframe(){iframe.value=`<iframe src=\"${location.href}\" width=\"420\" height=\"580\" frameborder=\"0\"></iframe>`}
 </script>
 </body>
 </html>
