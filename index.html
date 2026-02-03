@@ -1,284 +1,80 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deutsch interaktiv – Audio Studio Pro</title>
+import React, { useState } from 'react';
 
-<style>
-:root{
-  --bg1:#eef2fb;
-  --bg2:#f7f9fd;
-  --panel:#ffffff;
-  --accent:#9bb3e6;
-  --accent-soft:#e4ebfa;
-  --text:#2b2b2b;
-  --radius:18px;
-  --shadow:0 12px 30px rgba(0,0,0,.1);
-  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+export default function PlaylistPlayer() {
+  const [playlistCover, setPlaylistCover] = useState(null);
+  const [background, setBackground] = useState(null);
+  const [currentTrack, setCurrentTrack] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const tracks = [
+    'Track 1',
+    'Track 2',
+    'Track 3',
+    'Track 4',
+  ];
+
+  const handleCoverUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) setPlaylistCover(URL.createObjectURL(file));
+  };
+
+  const handleBackgroundUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) setBackground(URL.createObjectURL(file));
+  };
+
+  const togglePlay = (track) => {
+    setCurrentTrack(track);
+    setIsPlaying(!isPlaying);
+  };
+
+  return (
+    <div className={`min-h-screen flex items-center justify-center p-4`} style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 w-full max-w-md shadow-lg">
+        {/* Плейлист обложка и кнопка загрузки */}
+        <div className="flex flex-col items-center mb-6">
+          <div className="relative">
+            <img
+              src={playlistCover || 'https://via.placeholder.com/150'}
+              alt="Playlist Cover"
+              className="w-40 h-40 rounded-xl object-cover shadow-md"
+            />
+            <label className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-gray-100">
+              🖼️
+              <input type="file" className="hidden" onChange={handleCoverUpload} />
+            </label>
+          </div>
+          <label className="mt-3 px-4 py-2 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300">
+            🌄 Upload Background
+            <input type="file" className="hidden" onChange={handleBackgroundUpload} />
+          </label>
+          <h2 className="mt-4 text-xl font-semibold">My Playlist</h2>
+        </div>
+
+        {/* Список треков */}
+        <div className="space-y-2">
+          {tracks.map((track, index) => (
+            <div
+              key={index}
+              className={`flex justify-between items-center p-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors ${currentTrack === track ? 'bg-gray-200 font-semibold' : ''}`}
+              onClick={() => togglePlay(track)}
+            >
+              <span>{track}</span>
+              <button className="text-xl">{currentTrack === track && isPlaying ? '⏸️' : '▶️'}</button>
+            </div>
+          ))}
+        </div>
+
+        {/* Мини аудиоплеер */}
+        {currentTrack && (
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg shadow-inner flex justify-between items-center">
+            <div>{currentTrack}</div>
+            <button onClick={() => setIsPlaying(!isPlaying)} className="text-2xl">
+              {isPlaying ? '⏸️' : '▶️'}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
-
-/* 🌈 АНИМИРОВАННЫЙ ФОН «ХАМЕЛЕОН» */
-body{
-  margin:0;
-  min-height:100vh;
-  background:linear-gradient(120deg,var(--bg1),var(--bg2),#f1f6ff);
-  background-size:400% 400%;
-  animation:bgMove 18s ease infinite;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-@keyframes bgMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-
-/* 🧩 ПАНЕЛЬ */
-.player{
-  width:360px;
-  background:var(--panel);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:16px;
-}
-
-/* 🧠 HEADER */
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:6px;
-}
-
-.header h1{
-  font-size:15px;
-  margin:0;
-}
-
-select{
-  font-size:12px;
-  border-radius:6px;
-  padding:2px 4px;
-}
-
-/* 🖼 ОБЛОЖКА */
-.cover{
-  margin-top:10px;
-  height:140px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#e6ecfb,#f7f9ff);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:13px;
-  color:#666;
-}
-
-/* 🎵 AUDIO */
-audio{
-  width:100%;
-  margin-top:10px;
-}
-
-/* ⏱ ВРЕМЯ */
-.time{
-  display:flex;
-  justify-content:space-between;
-  font-size:11px;
-  margin-top:4px;
-}
-
-/* 🎛 КНОПКИ */
-.controls{
-  display:flex;
-  gap:6px;
-  margin-top:10px;
-  flex-wrap:wrap;
-}
-
-button{
-  flex:1;
-  border:none;
-  border-radius:8px;
-  padding:6px;
-  font-size:12px;
-  cursor:pointer;
-  background:var(--accent);
-  color:white;
-}
-
-button.secondary{
-  background:var(--accent-soft);
-  color:var(--text);
-}
-
-/* 🔁 ПЕРЕМОТКА */
-.seek{
-  display:flex;
-  gap:6px;
-  margin-top:6px;
-}
-
-.seek button{
-  font-size:11px;
-}
-
-/* 📂 ПЛЕЙЛИСТ */
-.playlist{
-  margin-top:10px;
-  font-size:12px;
-}
-
-.playlist div{
-  padding:4px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.playlist div:hover{
-  background:#eef3ff;
-}
-
-/* 🧪 РЕЖИМ */
-.mode{
-  margin-top:6px;
-  font-size:11px;
-  color:#555;
-  text-align:right;
-}
-</style>
-</head>
-
-<body>
-
-<div class="player">
-
-  <div class="header">
-    <h1 id="title">Deutsch interaktiv</h1>
-    <select id="langSelect"></select>
-  </div>
-
-  <div class="cover" id="cover">Audio Studio Pro</div>
-
-  <audio id="audio" controls></audio>
-
-  <div class="time">
-    <span id="current">0:00</span>
-    <span id="duration">0:00</span>
-  </div>
-
-  <div class="seek">
-    <button onclick="seek(-10)" class="secondary">⏪ -10s</button>
-    <button onclick="seek(10)" class="secondary">+10s ⏩</button>
-  </div>
-
-  <div class="controls">
-    <input type="file" id="upload" accept="audio/*" hidden>
-    <button onclick="upload.click()">📂 <span data-t="upload">Загрузить</span></button>
-    <button onclick="downloadAudio()" class="secondary">⬇ <span data-t="download">Скачать</span></button>
-  </div>
-
-  <div class="playlist" id="playlist"></div>
-
-  <div class="mode" id="modeLabel">Режим: Преподаватель</div>
-
-</div>
-
-<script>
-/* 🌍 ЯЗЫКИ */
-const translations={
-ru:{upload:"Загрузить",download:"Скачать"},
-en:{upload:"Upload",download:"Download"},
-de:{upload:"Hochladen",download:"Herunterladen"},
-es:{upload:"Subir",download:"Descargar"},
-it:{upload:"Carica",download:"Scarica"},
-fr:{upload:"Téléverser",download:"Télécharger"},
-zh:{upload:"上传",download:"下载"},
-hi:{upload:"अपलोड",download:"डाउनलोड"},
-ar:{upload:"تحميل",download:"تنزيل"},
-fa:{upload:"بارگذاری",download:"دانلود"},
-prs:{upload:"بارگذاری",download:"دانلود"}
-};
-
-const langSelect=document.getElementById("langSelect");
-Object.keys(translations).forEach(l=>{
-  const o=document.createElement("option");
-  o.value=l;o.text=l.toUpperCase();
-  langSelect.appendChild(o);
-});
-
-langSelect.onchange=()=>{
-  document.querySelectorAll("[data-t]").forEach(el=>{
-    el.textContent=translations[langSelect.value][el.dataset.t];
-  });
-};
-langSelect.value="ru";
-langSelect.onchange();
-
-/* 🎵 AUDIO LOGIC */
-const audio=document.getElementById("audio");
-const upload=document.getElementById("upload");
-const playlist=document.getElementById("playlist");
-const current=document.getElementById("current");
-const duration=document.getElementById("duration");
-
-let tracks=[];
-let currentURL=null;
-
-upload.onchange=e=>{
-  const f=e.target.files[0];
-  if(!f)return;
-  const url=URL.createObjectURL(f);
-  tracks.push({name:f.name,url});
-  play(url);
-  render();
-};
-
-function play(url){
-  currentURL=url;
-  audio.src=url;
-  audio.play().catch(()=>{});
-}
-
-function render(){
-  playlist.innerHTML="";
-  tracks.forEach(t=>{
-    const d=document.createElement("div");
-    d.textContent=t.name;
-    d.onclick=()=>play(t.url);
-    playlist.appendChild(d);
-  });
-}
-
-audio.ontimeupdate=()=>{
-  current.textContent=format(audio.currentTime);
-  duration.textContent=format(audio.duration);
-};
-
-function format(t){
-  if(!t)return"0:00";
-  const m=Math.floor(t/60);
-  const s=Math.floor(t%60).toString().padStart(2,"0");
-  return`${m}:${s}`;
-}
-
-/* 🔁 ПЕРЕМОТКА */
-function seek(sec){
-  audio.currentTime=Math.max(0,Math.min(audio.duration,audio.currentTime+sec));
-}
-
-/* ⬇ СКАЧИВАНИЕ */
-function downloadAudio(){
-  if(!currentURL)return;
-  const a=document.createElement("a");
-  a.href=currentURL;
-  a.download="audio";
-  a.click();
-}
-</script>
-
-</body>
-</html>
