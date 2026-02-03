@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUDIO STUDIO PRO | LUXE</title>
+    <title>AUDIO STUDIO PRO | ULTIMATE</title>
     <style>
         :root { 
             --gold: linear-gradient(135deg, #d4af37 0%, #f1c40f 50%, #b8860b 100%);
@@ -15,8 +15,9 @@
         /* --- SIDEBAR --- */
         .sidebar { width: 330px; background: var(--card-bg); padding: 25px; border-right: 2px solid #f1c40f; flex-shrink: 0; overflow-y: auto; z-index: 1000; box-shadow: 5px 0 15px rgba(0,0,0,0.05); }
         .logo-box { text-align: center; margin-bottom: 30px; }
-        .logo-img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid #d4af37; cursor: pointer; }
-        .app-title { color: var(--accent); font-weight: 900; font-size: 1.2rem; margin-top: 15px; text-transform: uppercase; }
+        .logo-img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid #d4af37; transition: 0.3s; }
+        .logo-img:hover { transform: rotate(5deg) scale(1.05); }
+        .app-title { color: var(--accent); font-weight: 900; font-size: 1.2rem; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* --- PLAYER AREA --- */
         .player-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; position: relative; }
@@ -25,10 +26,11 @@
         /* --- CONTROLS --- */
         #prog { width: 90%; max-width: 550px; accent-color: var(--accent); cursor: pointer; height: 8px; }
         .time { font-weight: 900; font-size: 2.5rem; margin: 20px 0; color: #222; font-variant-numeric: tabular-nums; }
-        .play-btn { width: 100px; height: 100px; border-radius: 50%; background: var(--gold); color: white; border: none; font-size: 3rem; cursor: pointer; box-shadow: 0 10px 25px rgba(212,175,55,0.4); display: flex; align-items: center; justify-content: center; }
+        .play-btn { width: 100px; height: 100px; border-radius: 50%; background: var(--gold); color: white; border: none; font-size: 3rem; cursor: pointer; box-shadow: 0 10px 25px rgba(212,175,55,0.4); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .play-btn:active { transform: scale(0.92); }
         
-        .slow-btn { background: #2ecc71; color: white; border: none; padding: 16px; border-radius: 14px; font-weight: 900; cursor: pointer; width: 100%; margin: 10px 0; text-transform: uppercase; }
-        .slow-btn.active { background: #e67e22; }
+        .slow-btn { background: #2ecc71; color: white; border: none; padding: 16px; border-radius: 14px; font-weight: 900; cursor: pointer; width: 100%; margin: 10px 0; text-transform: uppercase; transition: 0.3s; }
+        .slow-btn.active { background: #e67e22; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
 
         /* --- SMART TOGGLE PANEL --- */
         .dict-panel { width: 0px; background: white; border-left: 0px solid #d4af37; display: flex; position: relative; flex-shrink: 0; z-index: 500; transition: width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
@@ -36,12 +38,20 @@
         .resizer::after { content: '◀▶'; color: var(--accent); font-weight: bold; font-size: 14px; opacity: 0.4; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* --- CARDS & INPUTS --- */
+        /* --- UI ELEMENTS & CUSTOM FILE INPUTS --- */
         .card { background: #fff; padding: 15px; border-radius: 20px; border: 1px solid #eee; margin-bottom: 15px; }
         label { font-size: 0.75rem; font-weight: 900; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .input-row { display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 8px 15px; border-radius: 12px; margin-top: 8px; }
+        .input-row { display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 8px 15px; border-radius: 12px; margin-top: 8px; border: 1px solid transparent; }
+        .input-row:focus-within { border-color: #d4af37; background: #fff; }
+        
         input, select { border: none; background: transparent; width: 100%; outline: none; font-size: 0.9rem; color: #444; }
-        .x-btn { color: #ff5e5e; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 1.3rem; }
+        
+        /* Скрываем нативный инпут и стилизуем кнопку */
+        .file-input-wrapper { position: relative; width: 100%; }
+        .file-input-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; cursor: pointer; }
+        .custom-file-btn { font-size: 0.8rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; width: 100%; pointer-events: none; }
+
+        .x-btn { color: #ff5e5e; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 1.3rem; padding: 0 5px; }
     </style>
 </head>
 <body>
@@ -68,7 +78,11 @@
 
     <div class="card">
         <label id="l-materials">MATERIALS</label>
-        <div class="input-row"><input type="file" id="f-univ" accept=".pdf,.txt,.jpg,.png,.mp4"><button class="x-btn" onclick="clearF('f-univ','pdf')">✖</button></div>
+        <div class="input-row file-input-wrapper">
+            <input type="file" id="f-univ" accept=".pdf,.txt,.jpg,.png,.mp4" onchange="updateFileName(this)">
+            <span class="custom-file-btn" id="f-univ-btn">📁 File</span>
+            <button class="x-btn" onclick="clearF('f-univ','pdf')">✖</button>
+        </div>
         <div class="input-row"><input type="text" id="u-dict" oninput="loadD(this.value)"><button class="x-btn" onclick="clearF('u-dict','pdf')">✖</button></div>
     </div>
 </div>
@@ -87,48 +101,44 @@
         <div class="card">
             <label id="l-al">AUDIO</label>
             <div class="input-row"><input type="text" id="u-aud" oninput="audio.src=this.value"><button class="x-btn" onclick="clearF('u-aud','aud')">✖</button></div>
-            <div class="input-row"><input type="file" id="f-aud" accept="audio/*"><button class="x-btn" onclick="clearF('f-aud','aud')">✖</button></div>
+            <div class="input-row file-input-wrapper">
+                <input type="file" id="f-aud" accept="audio/*" onchange="updateFileName(this)">
+                <span class="custom-file-btn" id="f-aud-btn">📁 Audio</span>
+                <button class="x-btn" onclick="clearF('f-aud','aud')">✖</button>
+            </div>
         </div>
         <div class="card">
             <label id="l-il">IMAGE</label>
             <div class="input-row"><input type="text" id="u-img" oninput="setI(this.value)"><button class="x-btn" onclick="clearF('u-img','img')">✖</button></div>
-            <div class="input-row"><input type="file" id="f-img" accept="image/*"><button class="x-btn" onclick="clearF('f-img','img')">✖</button></div>
+            <div class="input-row file-input-wrapper">
+                <input type="file" id="f-img" accept="image/*" onchange="updateFileName(this)">
+                <span class="custom-file-btn" id="f-img-btn">📁 Image</span>
+                <button class="x-btn" onclick="clearF('f-img','img')">✖</button>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="dict-panel" id="dict-panel">
-    <div class="resizer" id="resizer" title="Click to Toggle"></div>
+    <div class="resizer" id="resizer" title="Toggle Side Panel"></div>
     <iframe id="frame"></iframe>
 </div>
 
 <script>
     const audio = new Audio(); audio.preservesPitch = true;
     
-    // ПОРЯДОК: ЕВРОПЕЙСКИЕ -> ВОСТОЧНЫЕ
     const langs = {
-        // EUROPEAN BLOCK
-        en: { name: "English", lang: "LANGUAGE", mode: "MODE", slow: "SLOW MOTION 0.8x", materials: "MATERIALS", al: "AUDIO", il: "IMAGE", study: "Study", master: "Master", test: "Test", link: "Link (URL)", dict: "Dictionary URL" },
-        ru: { name: "Русский", lang: "ЯЗЫК", mode: "РЕЖИМ", slow: "ЗАМЕДЛЕНИЕ 0.8x", materials: "МАТЕРИАЛЫ", al: "АУДИО", il: "ФОТО", study: "Ученик", master: "Мастер", test: "Тест", link: "Ссылка", dict: "Словарь URL" },
-        fr: { name: "Français", lang: "LANGUE", mode: "MODE", slow: "LENT 0.8x", materials: "MATÉRIELS", al: "AUDIO", il: "IMAGE", study: "Étude", master: "Maître", test: "Test", link: "Lien", dict: "URL dictionnaire" },
-        de: { name: "Deutsch", lang: "SPRACHE", mode: "MODUS", slow: "LANGSAM 0.8x", materials: "MATERIALIEN", al: "AUDIO", il: "BILD", study: "Lernen", master: "Master", test: "Test", link: "Link", dict: "Wörterbuch URL" },
-        es: { name: "Español", lang: "IDIOMA", mode: "MODO", slow: "LENTO 0.8x", materials: "MATERIALES", al: "AUDIO", il: "IMAGEN", study: "Estudio", master: "Maestro", test: "Prueba", link: "Enlace", dict: "URL diccionario" },
-        pt: { name: "Português", lang: "LÍNGUA", mode: "MODO", slow: "LENTO 0.8x", materials: "MATERIAIS", al: "ÁUDIO", il: "IMAGEM", study: "Estudo", master: "Mestre", test: "Teste", link: "Link", dict: "URL dicionário" },
-        it: { name: "Italiano", lang: "LINGUA", mode: "MODALITÀ", slow: "LENTO 0.8x", materials: "MATERIALI", al: "AUDIO", il: "IMMAGINE", study: "Studio", master: "Master", test: "Test", link: "Link", dict: "URL dizionario" },
-        el: { name: "Ελληνικά", lang: "ΓΛΩΣΣΑ", mode: "ΛΕΙΤΟΥΡΓΙΑ", slow: "ΑΡΓΟ 0.8x", materials: "ΥΛΙΚΑ", al: "ΗΧΟΣ", il: "ΕΙΚΟΝΑ", study: "Μελέτη", master: "Master", test: "Τεστ", link: "Σύνδεσμος", dict: "URL Λεξικού" },
-        
-        // ORIENTAL BLOCK
-        ar: { name: "العربية", lang: "اللغة", mode: "الوضع", slow: "بطيء 0.8x", materials: "المواد", al: "صوت", il: "صورة", study: "دراسة", master: "خبير", test: "اختبار", link: "رابط", dict: "قاموس" },
-        fa: { name: "فارسی", lang: "زبان", mode: "حالت", slow: "آهسته 0.8x", materials: "منابع", al: "صدا", il: "تصویر", study: "آموزش", master: "استاد", test: "آزمون", link: "لینک", dict: "دیکشنری" },
-        prs: { name: "Dari", lang: "زبان", mode: "حالت", slow: "آهسته 0.8x", materials: "مواد", al: "صدا", il: "تصویر", study: "آموزش", master: "استاد", test: "آزمون", link: "لینک", dict: "دیکشنری" },
-        hi: { name: "हिन्दी", lang: "भाषा", mode: "मोд", slow: "धीमा 0.8x", materials: "सामग्री", al: "ऑडियो", il: "चित्र", study: "अध्ययन", master: "मास्टर", test: "परीक्षा", link: "लिंक", dict: "यूआरएल" },
-        pa: { name: "ਪੰਜਾਬੀ", lang: "ਭਾਸ਼ਾ", mode: "ਮੋਡ", slow: "ਹੌਲੀ 0.8x", materials: "ਸਮੱਗਰੀ", al: "ਆਡੀਓ", il: "ਚਿੱਤਰ", study: "ਅਧਿਐਨ", master: "ਮਾਸਟਰ", test: "ਟੈਸਟ", link: "ਲਿੰਕ", dict: "ਡਿਕਸ਼ਨਰੀ" },
-        bn: { name: "বাংলা", lang: "ভাষা", mode: "মোড", slow: "ধীর 0.8x", materials: "উপকরণ", al: "অডিও", il: "ছবি", study: "অধ্যয়ন", master: "মাস্টার", test: "পরীক্ষা", link: "লিঙ্ক", dict: "অভিধান" },
-        th: { name: "ไทย", lang: "ภาษา", mode: "โหมด", slow: "ช้า 0.8x", materials: "วัสดุ", al: "เสียง", il: "รูปภาพ", study: "ศึกษา", master: "ต้นแบบ", test: "ทดสอบ", link: "ลิงก์", dict: "พจนานุกรม" },
-        zh: { name: "中文", lang: "语言", mode: "模式", slow: "慢放 0.8x", materials: "材料", al: "音频", il: "图片", study: "学习", master: "精通", test: "测试", link: "链接", dict: "字典" },
-        ja: { name: "日本語", lang: "言語", mode: "モード", slow: "スロー 0.8x", materials: "教材", al: "オーディオ", il: "画像", study: "学習", master: "マスター", test: "テスト", link: "リンク", dict: "辞書URL" },
-        ko: { name: "한국어", lang: "언어", mode: "모드", slow: "느리게 0.8x", materials: "자료", al: "오디오", il: "이미지", study: "학습", master: "마스터", test: "테스트", link: "링크", dict: "사전 URL" },
-        tr: { name: "Türkçe", lang: "DİL", mode: "MOD", slow: "YAVAŞ 0.8x", materials: "MALZEMELER", al: "SES", il: "RESİM", study: "Çalışma", master: "Usta", test: "Test", link: "Bağlantı", dict: "Sözlük URL" }
+        en: { name: "English", lang: "LANGUAGE", mode: "MODE", slow: "SLOW MOTION 0.8x", materials: "MATERIALS", al: "AUDIO", il: "IMAGE", study: "Study", master: "Master", test: "Test", link: "Link (URL)", dict: "Dictionary URL", select: "📁 Choose file", empty: "No file selected" },
+        ru: { name: "Русский", lang: "ЯЗЫК", mode: "РЕЖИМ", slow: "ЗАМЕДЛЕНИЕ 0.8x", materials: "МАТЕРИАЛЫ", al: "АУДИО", il: "ФОТО", study: "Ученик", master: "Мастер", test: "Тест", link: "Ссылка", dict: "Словарь URL", select: "📁 Выберите файл", empty: "Файл не выбран" },
+        fr: { name: "Français", lang: "LANGUE", mode: "MODE", slow: "LENT 0.8x", materials: "MATÉRIELS", al: "AUDIO", il: "IMAGE", study: "Étude", master: "Maître", test: "Test", link: "Lien", dict: "URL dictionnaire", select: "📁 Choisir", empty: "Aucun fichier" },
+        de: { name: "Deutsch", lang: "SPRACHE", mode: "MODUS", slow: "LANGSAM 0.8x", materials: "MATERIALIEN", al: "AUDIO", il: "BILD", study: "Lernen", master: "Master", test: "Test", link: "Link", dict: "Wörterbuch URL", select: "📁 Datei wählen", empty: "Keine Datei" },
+        es: { name: "Español", lang: "IDIOMA", mode: "MODO", slow: "LENTO 0.8x", materials: "MATERIALES", al: "AUDIO", il: "IMAGEN", study: "Estudio", master: "Maestro", test: "Prueba", link: "Enlace", dict: "URL diccionario", select: "📁 Seleccionar", empty: "Sin archivo" },
+        it: { name: "Italiano", lang: "LINGUA", mode: "MODALITÀ", slow: "LENTO 0.8x", materials: "MATERIALI", al: "AUDIO", il: "IMMAGINE", study: "Studio", master: "Master", test: "Test", link: "Link", dict: "URL dizionario", select: "📁 Scegli file", empty: "Nessun file" },
+        ar: { name: "العربية", lang: "اللغة", mode: "الوضع", slow: "بطيء 0.8x", materials: "المواد", al: "صوت", il: "صورة", study: "دراسة", master: "خبير", test: "اختبار", link: "رابط", dict: "قاموس", select: "📁 اختر الملف", empty: "لم يتم الاختيار" },
+        fa: { name: "فارسی", lang: "زبان", mode: "حالت", slow: "آهسته 0.8x", materials: "منابع", al: "صدا", il: "تصویر", study: "آموزش", master: "استاد", test: "آزمون", link: "لینک", dict: "دیکشنری", select: "📁 انتخاب فایل", empty: "فایلی انتخاب نشده" },
+        prs: { name: "Dari", lang: "زبان", mode: "حالت", slow: "آهسته 0.8x", materials: "مواد", al: "صدا", il: "تصویر", study: "آموزش", master: "استاد", test: "آزمون", link: "لینک", dict: "دیکشنری", select: "📁 انتخاب فایل", empty: "فایلی انتخاب نشد" },
+        hi: { name: "हिन्दी", lang: "भाषा", mode: "मोड", slow: "धीमा 0.8x", materials: "सामग्री", al: "ऑडियो", il: "चित्र", study: "अध्ययन", master: "मास्टर", test: "परीक्षा", link: "लिंक", dict: "डिक्शनरी", select: "📁 फ़ाइल चुनें", empty: "कोई फ़ाइल नहीं" },
+        zh: { name: "中文", lang: "语言", mode: "模式", slow: "慢放 0.8x", materials: "材料", al: "音频", il: "图片", study: "学习", master: "精通", test: "测试", link: "链接", dict: "字典", select: "📁 选择文件", empty: "未选择" }
     };
 
     const sel = document.getElementById('langSelect');
@@ -141,23 +151,37 @@
         document.getElementById('u-aud').placeholder = t.link;
         document.getElementById('u-img').placeholder = t.link;
         document.getElementById('u-dict').placeholder = t.dict;
+        
+        // Обновляем текст кастомных кнопок файлов, если файлы не выбраны
+        ['f-univ', 'f-aud', 'f-img'].forEach(id => {
+            const input = document.getElementById(id);
+            if (!input.files.length) document.getElementById(id + '-btn').innerText = t.select;
+        });
     }
 
+    function updateFileName(input) {
+        const btn = document.getElementById(input.id + '-btn');
+        const t = langs[sel.value] || langs['en'];
+        if (input.files.length > 0) {
+            btn.innerText = "📄 " + input.files[0].name;
+            btn.style.color = "#b8860b";
+            if(input.id === 'f-univ') { document.getElementById('frame').src = URL.createObjectURL(input.files[0]); openPanel(600); }
+            if(input.id === 'f-aud') audio.src = URL.createObjectURL(input.files[0]);
+            if(input.id === 'f-img') setI(URL.createObjectURL(input.files[0]));
+        } else {
+            btn.innerText = t.select;
+            btn.style.color = "#777";
+        }
+    }
+
+    // --- SIDE PANEL LOGIC ---
     const p = document.getElementById('dict-panel'), r = document.getElementById('resizer');
-    let isDragging = false;
-    let startX;
+    let isDragging = false, startX;
 
     r.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX; p.style.transition = 'none'; });
-    
-    // КЛИК ДЛЯ ВОЗВРАТА ВПРАВО
-    r.addEventListener('click', (e) => {
-        if (Math.abs(startX - e.clientX) < 5) {
-            parseInt(getComputedStyle(p).width) > 0 ? closePanel() : openPanel(600);
-        }
-    });
-
+    r.addEventListener('click', (e) => { if (Math.abs(startX - e.clientX) < 5) parseInt(getComputedStyle(p).width) > 0 ? closePanel() : openPanel(600); });
     document.addEventListener('mouseup', () => { if (isDragging) { isDragging = false; if (parseInt(p.style.width) < 180) closePanel(); } });
-    document.addEventListener('mousemove', (e) => { if (!isDragging) return; let w = window.innerWidth - e.clientX; if (w > 50 && w < window.innerWidth * 0.9) { p.style.width = w + 'px'; p.style.borderLeft = '10px solid #d4af37'; } });
+    document.addEventListener('mousemove', (e) => { if (!isDragging) return; let w = window.innerWidth - e.clientX; if (w > 50) { p.style.width = w + 'px'; p.style.borderLeft = '10px solid #d4af37'; } });
 
     function openPanel(w) { p.style.transition = 'width 0.4s ease'; p.style.width = w + 'px'; p.style.borderLeft = '10px solid #d4af37'; }
     function closePanel() { p.style.transition = 'width 0.4s ease'; p.style.width = '0px'; p.style.borderLeft = '0px'; }
@@ -169,15 +193,13 @@
     function loadD(u) { if(u) { document.getElementById('frame').src = u; openPanel(600); } }
     
     function clearF(id, type) { 
-        document.getElementById(id).value = ''; 
+        const input = document.getElementById(id);
+        input.value = ''; 
+        updateFileName(input);
         if(type==='aud') audio.src = ''; 
         if(type==='img') setI(''); 
         if(type==='pdf') { document.getElementById('frame').src = 'about:blank'; closePanel(); }
     }
-
-    document.getElementById('f-univ').onchange = (e) => { const f = e.target.files[0]; if(f) { document.getElementById('frame').src = URL.createObjectURL(f); openPanel(600); } };
-    document.getElementById('f-aud').onchange = (e) => { if(e.target.files[0]) audio.src = URL.createObjectURL(e.target.files[0]); };
-    document.getElementById('f-img').onchange = (e) => { if(e.target.files[0]) setI(URL.createObjectURL(e.target.files[0])); };
 
     audio.ontimeupdate = () => {
         const pr = document.getElementById('prog'); pr.max = audio.duration || 0; pr.value = audio.currentTime;
