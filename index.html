@@ -1,64 +1,31 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deutsch interaktiv - Audio Studio PRO</title>
     <style>
         :root { --primary: #6c5ce7; --glass: rgba(255, 255, 255, 0.95); }
-
-        body.chameleon {
-            background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #00d2ff);
-            background-size: 400% 400%;
-            animation: move 15s ease infinite;
-        }
-        body.pastel { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
+        body.chameleon { background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #00d2ff); background-size: 400% 400%; animation: move 15s ease infinite; }
         @keyframes move { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; transition: 0.5s; color: #2d3436; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; transition: 0.5s; }
         .container { display: grid; grid-template-columns: 380px 520px; gap: 20px; width: 95%; max-width: 1000px; position: relative; }
-        .panel { background: var(--glass); backdrop-filter: blur(15px); padding: 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        
+        .panel { background: var(--glass); backdrop-filter: blur(15px); padding: 25px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
         .header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
         .logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary); background: white; object-fit: contain; }
-
-        label { display: block; font-size: 0.7rem; font-weight: bold; margin: 12px 0 5px; text-transform: uppercase; color: #444; }
-        select, input, textarea { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd; font-size: 0.9rem; margin-bottom: 5px; box-sizing: border-box; }
-
-        .btn { 
-            width: 100%; 
-            min-height: 45px; 
-            padding: 10px; 
-            border: none; 
-            border-radius: 12px; 
-            background: var(--primary); 
-            color: white; 
-            cursor: pointer; 
-            font-weight: bold; 
-            margin-top: 10px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            text-align: center;
-            white-space: normal; 
-        }
-        .btn:hover { filter: brightness(1.1); }
-
+        label { display: block; font-size: 0.7rem; font-weight: bold; margin: 12px 0 5px; text-transform: uppercase; }
+        select, input, textarea { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 5px; box-sizing: border-box; }
+        .btn { width: 100%; min-height: 45px; padding: 10px; border: none; border-radius: 12px; background: var(--primary); color: white; cursor: pointer; font-weight: bold; margin-top: 10px; display: flex; align-items: center; justify-content: center; text-align: center; white-space: normal; }
         .cover-art { width: 100%; height: 260px; border-radius: 20px; background: #eee center/cover no-repeat; border: 5px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .controls { display: flex; justify-content: center; gap: 15px; margin: 15px 0; }
-        .c-btn { width: 55px; height: 55px; border-radius: 15px; border: none; background: var(--primary); color: white; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .c-btn:disabled { background: #ccc; opacity: 0.5; cursor: not-allowed; }
-
+        .c-btn { width: 55px; height: 55px; border-radius: 15px; border: none; background: var(--primary); color: white; font-size: 1.2rem; cursor: pointer; }
         #timer-box { font-size: 1.8rem; font-weight: bold; color: #e74c3c; text-align: center; margin-bottom: 10px; display: none; }
         #lock-screen { position: absolute; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; border-radius: 30px; display: none; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; }
     </style>
 </head>
 <body class="chameleon">
 
-<div id="lock-screen">
-    <h1 id="lock-msg">Time is up</h1>
-    <button id="btn-restart" class="btn" onclick="location.reload()" style="width:180px; margin: 0 auto;">Restart</button>
-</div>
+<div id="lock-screen"><h1 id="lock-msg">Time is up</h1><button class="btn" onclick="location.reload()" style="width:180px;">Restart</button></div>
 
 <div class="container">
     <div class="panel">
@@ -66,31 +33,24 @@
             <img src="logo.png" class="logo" alt="Logo" onerror="this.src='https://via.placeholder.com/60?text=DI'">
             <h3 style="margin:0">Deutsch interaktiv</h3>
         </div>
-
-        <label id="lbl-theme">🎨 Тема фона</label>
-        <select id="themeSet"><option value="chameleon">Deep Ocean</option><option value="pastel">Pastel</option></select>
-
-        <label id="lbl-lang">🌐 Язык изучения</label>
+        <label id="lbl-lang">🌐 Язык / Sprache</label>
         <select id="langSet">
-            <option value="de" data-img="germany">Deutsch</option>
-            <option value="ru" data-img="russia">Русский</option>
-            <option value="en" data-img="london">English</option>
-            <option value="fr" data-img="france">Français</option>
-        </select>
-
-        <label id="lbl-mode">🎓 Режим работы</label>
+            <option value="de">Deutsch</option>
+            <option value="ru">Русский</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            </select>
+        <label id="lbl-mode">🎓 Режим / Modus</label>
         <select id="modeSet">
-            <option value="master">Учитель (Master)</option>
-            <option value="study">Ученик (Study)</option>
-            <option value="test">Экзамен (Test)</option>
+            <option value="master">Master</option>
+            <option value="study">Study</option>
+            <option value="test">Test</option>
         </select>
-
-        <div id="extra-tools">
+        <div id="tools">
             <button class="btn" id="slowBtn" style="background:#00b894; display:none">🐢 Slow 0.8x</button>
             <button class="btn" id="loopBtn" style="background:#0984e3; display:none">🔄 Loop: Off</button>
         </div>
-
-        <label id="lbl-code" style="margin-top:20px">📦 Код для Genially</label>
+        <label id="lbl-code" style="margin-top:20px">📦 Код Iframe</label>
         <textarea id="ifOut" readonly style="height:45px; font-size:0.7rem"></textarea>
         <button class="btn" id="copyBtn">Скопировать код</button>
     </div>
@@ -99,62 +59,48 @@
         <div id="cur-mode-tag" style="font-weight:bold; color:var(--primary); font-size:0.7rem; margin-bottom:5px; text-transform:uppercase;">MASTER MODE</div>
         <div class="cover-art" id="cover"></div>
         <div id="timer-box">02:00</div>
-        
         <input type="range" id="prog" value="0" step="0.1" style="width:100%">
         <div style="text-align:center; font-family:monospace; margin-top:5px; font-weight:bold;" id="time-txt">00:00 / 00:00</div>
-
         <div class="controls">
             <button class="c-btn" id="rew">⏪</button>
             <button class="c-btn" id="play" style="width:75px; height:75px; border-radius:50%">▶</button>
             <button class="c-btn" id="fwd">⏩</button>
         </div>
-
-        <label id="lbl-audio">📁 Загрузить аудио</label>
+        <label id="lbl-audio">📁 Аудио / Audio</label>
         <input type="file" id="audIn" accept="audio/*">
-        <label id="lbl-cover">🖼️ Загрузить обложку</label>
-        <input type="file" id="imgIn" accept="image/*">
     </div>
 </div>
 
 <script>
     const audio = new Audio();
     let playCount = 0, timer;
-
     const dict = {
-        de: { theme: "🎨 Thema", lang: "🌐 Sprache", mode: "🎓 Modus", code: "📦 Iframe-Code", audio: "📁 Audio laden", cover: "🖼️ Cover laden", copy: "Code kopieren", lock: "Zeit ist um", restart: "Neustart", slow: "🐢 Langsam 0.8x" },
-        ru: { theme: "🎨 Тема фона", lang: "🌐 Язык", mode: "🎓 Режим", code: "📦 Код Iframe", audio: "📁 Загрузить аудио", cover: "🖼️ Загрузить обложку", copy: "Скопировать код", lock: "Время вышло", restart: "Заново", slow: "🐢 Замедлить 0.8x" },
-        en: { theme: "🎨 Theme", lang: "🌐 Language", mode: "🎓 Mode", code: "📦 Iframe Code", audio: "📁 Upload Audio", cover: "🖼️ Upload Cover", copy: "Copy Code", lock: "Time is up", restart: "Restart", slow: "🐢 Slow 0.8x" }
+        de: { lang: "🌐 Sprache", mode: "🎓 Modus", code: "📦 Iframe-Code", audio: "📁 Audio laden", copy: "Kopieren", lock: "Zeit um!", slow: "🐢 Langsam 0.8x" },
+        ru: { lang: "🌐 Язык", mode: "🎓 Режим", code: "📦 Код Iframe", audio: "📁 Загрузить аудио", copy: "Скопировать код", lock: "Время вышло!", slow: "🐢 Замедлить 0.8x" },
+        en: { lang: "🌐 Language", mode: "🎓 Mode", code: "📦 Iframe Code", audio: "📁 Load Audio", copy: "Copy Code", lock: "Time is up!", slow: "🐢 Slow 0.8x" }
     };
 
     function updateUI() {
         const l = document.getElementById('langSet').value;
         const d = dict[l] || dict['en'];
-        document.getElementById('lbl-theme').innerText = d.theme;
         document.getElementById('lbl-lang').innerText = d.lang;
         document.getElementById('lbl-mode').innerText = d.mode;
         document.getElementById('lbl-code').innerText = d.code;
         document.getElementById('lbl-audio').innerText = d.audio;
-        document.getElementById('lbl-cover').innerText = d.cover;
         document.getElementById('copyBtn').innerText = d.copy;
         document.getElementById('lock-msg').innerText = d.lock;
-        document.getElementById('btn-restart').innerText = d.restart;
         document.getElementById('slowBtn').innerText = d.slow;
     }
 
     document.getElementById('langSet').onchange = updateUI;
-    document.getElementById('themeSet').onchange = (e) => document.body.className = e.target.value;
-
     document.getElementById('modeSet').onchange = () => {
         const m = document.getElementById('modeSet').value;
         document.getElementById('cur-mode-tag').innerText = m + " mode";
         document.getElementById('slowBtn').style.display = (m==='study')?'flex':'none';
         document.getElementById('loopBtn').style.display = (m==='master')?'flex':'none';
         document.getElementById('timer-box').style.display = (m==='test')?'block':'none';
-        
         playCount = 0; audio.playbackRate = 1; audio.loop = false; clearInterval(timer);
         document.getElementById('prog').disabled = false;
-        document.getElementById('rew').disabled = false;
-        document.getElementById('fwd').disabled = false;
         document.getElementById('timer-box').innerText = "02:00";
     };
 
@@ -162,14 +108,18 @@
         if(!audio.src) return;
         if(audio.paused) {
             const m = document.getElementById('modeSet').value;
-            if(m==='test' && !timer) { startTest(); }
+            if(m==='test' && !timer) {
+                let t = 120;
+                document.getElementById('prog').disabled = true;
+                timer = setInterval(() => {
+                    t--; let min=Math.floor(t/60), sec=t%60;
+                    document.getElementById('timer-box').innerText = `${min}:${sec<10?'0'+sec:sec}`;
+                    if(t<=0) { audio.pause(); document.getElementById('lock-screen').style.display='flex'; clearInterval(timer); }
+                }, 1000);
+            }
             if(m==='study') { 
                 playCount++; 
-                if(playCount >= 3) { 
-                    document.getElementById('prog').disabled = true;
-                    document.getElementById('rew').disabled = true;
-                    document.getElementById('fwd').disabled = true;
-                }
+                if(playCount >= 3) { document.getElementById('prog').disabled = true; }
             }
             audio.play(); document.getElementById('play').innerText = '⏸';
         } else {
@@ -177,22 +127,17 @@
         }
     };
 
-    function startTest() {
-        let t = 120;
-        document.getElementById('prog').disabled = true;
-        document.getElementById('rew').disabled = true;
-        document.getElementById('fwd').disabled = true;
-        timer = setInterval(() => {
-            t--; let min=Math.floor(t/60), sec=t%60;
-            document.getElementById('timer-box').innerText = `${min}:${sec<10?'0'+sec:sec}`;
-            if(t<=0) { audio.pause(); document.getElementById('lock-screen').style.display='flex'; clearInterval(timer); }
-        }, 1000);
-    }
-
     document.getElementById('slowBtn').onclick = () => audio.playbackRate = (audio.playbackRate===1)?0.8:1;
-    document.getElementById('loopBtn').onclick = () => { 
-        audio.loop = !audio.loop; 
-        document.getElementById('loopBtn').innerText = audio.loop ? "🔄 Loop: ON" : "🔄 Loop: OFF"; 
+    document.getElementById('loopBtn').onclick = () => { audio.loop = !audio.loop; document.getElementById('loopBtn').innerText = audio.loop ? "🔄 Loop: ON" : "🔄 Loop: OFF"; };
+    document.getElementById('audIn').onchange = (e) => { if(e.target.files[0]) audio.src = URL.createObjectURL(e.target.files[0]); };
+    audio.ontimeupdate = () => {
+        const p = document.getElementById('prog'); p.max = audio.duration || 0; p.value = audio.currentTime;
+        const f = s => new Date(s * 1000).toISOString().substr(14, 5);
+        document.getElementById('time-txt').innerText = `${f(audio.currentTime)} / ${f(audio.duration || 0)}`;
     };
-    
-    document.getElementById('audIn').onchange = (e)
+    document.getElementById('prog').oninput = (e) => audio.currentTime = e.target.value;
+    document.getElementById('rew').onclick = () => audio.currentTime -= 10;
+    document.getElementById('fwd').onclick = () => audio.currentTime += 10;
+    document.getElementById('copyBtn').onclick = () => {
+        const code = `<iframe src="${window.location.href}" width="100%" height="750px" frameborder="0" allow="autoplay"></iframe>`;
+        document.getElementById('ifOut').value = code; navigator.clipboard.writeText(code); alert("Copied!");
