@@ -11,63 +11,47 @@
 
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); display: flex; height: 100vh; overflow: hidden; width: 100vw; }
 
-        /* SIDEBAR */
-        .sidebar { width: 320px; background: white; padding: 25px; border-right: 2px solid #f1c40f; flex-shrink: 0; overflow-y: auto; z-index: 100; box-shadow: 5px 0 15px rgba(0,0,0,0.05); }
-        .logo-box { text-align: center; margin-bottom: 25px; cursor: pointer; }
+        /* САЙДБАР - ВОЗВРАЩАЕМ ПОЛНУЮ СТРУКТУРУ */
+        .sidebar { width: 320px; background: white; padding: 25px; border-right: 2px solid #f1c40f; flex-shrink: 0; overflow-y: auto; z-index: 1000; box-shadow: 5px 0 15px rgba(0,0,0,0.05); }
+        .logo-box { text-align: center; margin-bottom: 25px; }
         .logo-img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid #d4af37; box-shadow: 0 5px 15px rgba(212,175,55,0.3); }
 
-        /* PLAYER ZONE */
-        .player-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; min-width: 400px; position: relative; transition: all 0.1s ease; }
+        /* ПЛЕЕР */
+        .player-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; min-width: 400px; position: relative; }
         .cover { 
-            width: 90%; max-width: 550px; aspect-ratio: 16/9; border-radius: 30px; 
+            width: 80%; max-width: 500px; aspect-ratio: 16/9; border-radius: 30px; 
             background: white; border: 10px solid white; box-shadow: 0 20px 50px rgba(184,134,11,0.15);
             display: flex; align-items: center; justify-content: center; font-size: 5rem; color: #d4af37; margin-bottom: 20px;
             background-size: cover; background-position: center;
         }
 
-        /* CONTROLS */
-        #prog { width: 90%; max-width: 550px; accent-color: var(--accent); height: 10px; cursor: pointer; }
-        .time { font-weight: 900; font-size: 2rem; margin: 15px 0; color: #333; font-variant-numeric: tabular-nums; }
-        .controls { display: flex; gap: 35px; align-items: center; margin-bottom: 30px; }
-        .play-btn { width: 100px; height: 100px; border-radius: 50%; background: var(--gold); color: white; border: none; font-size: 3rem; cursor: pointer; box-shadow: 0 10px 20px rgba(212,175,55,0.4); }
-        .nav-btn { background: none; border: none; font-size: 2.8rem; cursor: pointer; color: #444; }
+        /* УПРАВЛЕНИЕ */
+        #prog { width: 85%; max-width: 500px; accent-color: var(--accent); height: 10px; cursor: pointer; }
+        .time { font-weight: 900; font-size: 2rem; margin: 15px 0; color: #333; }
+        .play-btn { width: 90px; height: 90px; border-radius: 50%; background: var(--gold); color: white; border: none; font-size: 2.5rem; cursor: pointer; }
 
-        /* УМНАЯ ШТОРКА (ИСПРАВЛЕНО) */
+        /* ИСПРАВЛЕННАЯ ШТОРКА */
         .dict-panel { 
-            width: 0px; /* Изначально закрыта */
-            background: white; 
-            border-left: 0px solid #d4af37; 
-            display: flex; 
-            position: relative; 
-            flex-shrink: 0; 
-            z-index: 50;
-            transition: border-left 0.2s;
+            width: 0px; background: white; border-left: 0px solid #d4af37; 
+            display: flex; position: relative; flex-shrink: 0; z-index: 500;
         }
+        /* Зона захвата теперь ВСЕГДА ПОВЕРХ PDF */
         .resizer { 
-            width: 40px; /* Увеличенная зона захвата */
-            cursor: col-resize; 
-            position: absolute; 
-            left: -20px; 
-            top: 0; 
-            bottom: 0; 
-            z-index: 200; 
-            background: rgba(212, 175, 55, 0.05); /* Легкая подсветка зоны захвата */
+            width: 30px; cursor: col-resize; position: absolute; left: -15px; top: 0; bottom: 0; 
+            z-index: 9999; background: rgba(212, 175, 55, 0.1); display: flex; align-items: center; justify-content: center;
         }
-        .resizer:hover { background: rgba(212, 175, 55, 0.2); }
-        
+        .resizer::after { content: '◀▶'; font-size: 12px; color: var(--accent); font-weight: bold; }
+
+        /* ПОЛЯ ВВОДА - ИСПРАВЛЯЕМ НАЛОЖЕНИЕ ТЕКСТА */
+        .card { background: #fff; padding: 12px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; }
+        .input-group { display: flex; align-items: center; gap: 8px; margin-top: 5px; background: #f9f9f9; padding: 5px; border-radius: 8px; }
+        input[type="text"], input[type="file"] { border: none; background: transparent; width: 100%; outline: none; font-size: 0.8rem; }
+        .x-btn { color: #ff5e5e; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; padding: 0 5px; }
+
+        .slow-btn { background: #2ecc71; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; }
+        .slow-btn.active { background: #e67e22; }
+
         iframe { width: 100%; height: 100%; border: none; }
-
-        /* КАРТОЧКИ И ПОЛЯ */
-        .card { background: #fff; padding: 15px; border-radius: 20px; border: 1px solid #eee; margin-bottom: 12px; position: relative; }
-        .input-row { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
-        input, select { width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid #ddd; outline: none; }
-        label { font-size: 0.65rem; font-weight: 900; color: var(--accent); text-transform: uppercase; }
-        .x { color: #e74c3c; background: none; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem; }
-        
-        .slow-mode { background: #2ecc71; color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 800; cursor: pointer; width: 100%; margin: 15px 0; }
-        .slow-mode.active { background: #e67e22; }
-
-        #test-lock { display: none; position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; color: white; flex-direction: column; align-items: center; justify-content: center; border-radius: 30px; }
     </style>
 </head>
 <body>
@@ -78,140 +62,117 @@
         <h2 style="color:var(--accent); font-weight:900;">AUDIO STUDIO PRO</h2>
     </div>
 
-    <label id="l-lang">LANGUAGE / SPRACHE</label>
+    <label>LANGUAGE / SPRACHE</label>
     <select id="langSelect" onchange="translate()">
-        <option value="de">Deutsch</option>
-        <option value="ru">Русский</option>
-        <option value="it">Italiano</option>
-        <option value="fr">Français</option>
-        <option value="es">Español</option>
-        <option value="en">English</option>
-        </select>
-
-    <label id="l-mode" style="margin-top:15px; display:block;">MODE / MODUS</label>
-    <select id="modeSelect" onchange="setMode()">
-        <option value="study" id="opt-study">Study (Ученик)</option>
-        <option value="master" id="opt-master">Master (Loop)</option>
-        <option value="test" id="opt-test">Test (Exam)</option>
+        <option value="de">Deutsch</option><option value="ru">Русский</option>
+        <option value="it">Italiano</option><option value="fr">Français</option>
+        <option value="es">Español</option><option value="en">English</option>
+        <option value="ja">日本語</option><option value="zh">中文</option>
+        <option value="fa">فارسی</option><option value="hi">हिन्दी</option>
     </select>
 
-    <button id="slowBtn" class="slow-mode" onclick="tempo()">🐢 <span id="l-slow">LANGSAM 0.8x</span></button>
+    <label style="margin-top:15px; display:block;">MODE / MODUS</label>
+    <select id="modeSelect" onchange="setMode()">
+        <option value="study">Study (Ученик)</option>
+        <option value="master">Master (Loop)</option>
+        <option value="test">Test (Exam)</option>
+    </select>
+
+    <button id="slowBtn" class="slow-btn" onclick="toggleSlow()">🐢 LANGSAM 0.8x</button>
 
     <div class="card">
-        <label id="l-pdf">PDF LADEN</label>
-        <div class="input-row"><input type="file" id="f-pdf" accept=".pdf"><button class="x" onclick="cls('f-pdf','pdf')">✖</button></div>
+        <label>PDF / MATERIALS</label>
+        <div class="input-group">
+            <input type="file" id="f-pdf" accept=".pdf">
+            <button class="x-btn" onclick="clearField('f-pdf')">✖</button>
+        </div>
     </div>
     <div class="card">
-        <label id="l-dict">WÖRTERBUCH URL</label>
-        <div class="input-row"><input type="text" id="u-dict" oninput="loadD(this.value)"><button class="x" onclick="cls('u-dict','pdf')">✖</button></div>
+        <label>DICTIONARY URL</label>
+        <div class="input-group">
+            <input type="text" id="u-dict" placeholder="https://..." oninput="loadDict(this.value)">
+            <button class="x-btn" onclick="clearField('u-dict')">✖</button>
+        </div>
     </div>
 </div>
 
 <div class="player-zone">
-    <div id="test-lock"><h1 id="l-timeup">ZEIT IST UM</h1><button onclick="location.reload()" style="padding:10px 20px; cursor:pointer; border-radius:10px; border:none; background:var(--gold); color:white; font-weight:bold;">RESTART</button></div>
-    <div id="status" style="color:var(--accent); font-weight:bold; letter-spacing:3px; margin-bottom:15px;">BEREIT</div>
+    <div id="status" style="color:var(--accent); font-weight:bold; letter-spacing:2px;">READY</div>
     <div class="cover" id="cover">🎵</div>
-    
     <input type="range" id="prog" value="0" step="0.1">
-    <div class="time" id="time-txt">00:00 / 00:00</div>
-
-    <div class="controls">
-        <button class="nav-btn" id="btn-back" onclick="audio.currentTime-=10">⏪</button>
-        <button class="play-btn" id="play-btn" onclick="toggle()">▶</button>
-        <button class="nav-btn" id="btn-next" onclick="audio.currentTime+=10">⏩</button>
+    <div class="time" id="time-display">00:00 / 00:00</div>
+    <div class="controls" style="display:flex; align-items:center; gap:30px;">
+        <button onclick="audio.currentTime-=10" style="background:none; border:none; font-size:2rem; cursor:pointer;">⏪</button>
+        <button class="play-btn" id="play-btn" onclick="togglePlay()">▶</button>
+        <button onclick="audio.currentTime+=10" style="background:none; border:none; font-size:2rem; cursor:pointer;">⏩</button>
     </div>
 
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; width:100%; max-width:750px;">
-        <div class="card"><label id="l-al">AUDIO LINK</label><div class="input-row"><input type="text" id="u-aud" oninput="audio.src=this.value"><button class="x" onclick="cls('u-aud','aud')">✖</button></div></div>
-        <div class="card"><label id="l-il">BILD LINK</label><div class="input-row"><input type="text" id="u-img" oninput="setI(this.value)"><button class="x" onclick="cls('u-img','img')">✖</button></div></div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; width:90%; max-width:700px; margin-top:20px;">
+        <div class="card">
+            <label>AUDIO LINK/FILE</label>
+            <div class="input-group"><input type="text" id="u-aud" placeholder="URL" oninput="audio.src=this.value"><button class="x-btn" onclick="clearField('u-aud')">✖</button></div>
+            <div class="input-group"><input type="file" id="f-aud" accept="audio/*"><button class="x-btn" onclick="clearField('f-aud')">✖</button></div>
+        </div>
+        <div class="card">
+            <label>IMAGE LINK/FILE</label>
+            <div class="input-group"><input type="text" id="u-img" placeholder="URL" oninput="setCover(this.value)"><button class="x-btn" onclick="clearField('u-img')">✖</button></div>
+            <div class="input-group"><input type="file" id="f-img" accept="image/*"><button class="x-btn" onclick="clearField('f-img')">✖</button></div>
+        </div>
     </div>
 </div>
 
 <div class="dict-panel" id="dict-panel">
-    <div class="resizer" id="resizer" title="Тяните влево, чтобы открыть, или вправо до конца, чтобы закрыть"></div>
+    <div class="resizer" id="resizer"></div>
     <iframe id="frame"></iframe>
 </div>
 
 <script>
     const audio = new Audio(); audio.preservesPitch = true;
-    const db = {
-        de: { slow: "LANGSAM 0.8x", pdf: "PDF LADEN", dict: "WÖRTERBUCH URL", al: "AUDIO LINK", il: "BILD LINK", ready: "BEREIT", play: "SPIELT", pause: "PAUSE", study: "Lernen", master: "Master", test: "Test", up: "ZEIT IST UM" },
-        ru: { slow: "ЗАМЕДЛЕНИЕ 0.8x", pdf: "ЗАГРУЗИТЬ PDF", dict: "СЛОВАРЬ URL", al: "АУДИО ССЫЛКА", il: "ФОТО ССЫЛКА", ready: "ГОТОВ", play: "ИГРАЕТ", pause: "ПАУЗА", study: "Ученик", master: "Мастер", test: "Тест", up: "ВРЕМЯ ВЫШЛО" },
-        it: { slow: "RALLENTA 0.8x", pdf: "CARICA PDF", dict: "URL DIZIONARIO", al: "LINK AUDIO", il: "LINK IMMAGINE", ready: "PRONTO", play: "PLAY", pause: "PAUSA", study: "Studio", master: "Master", test: "Test", up: "TEMPO SCADUTO" }
-    };
+    const panel = document.getElementById('dict-panel');
+    const resizer = document.getElementById('resizer');
+    let isResizing = false;
 
-    function translate() {
-        const l = document.getElementById('langSelect').value;
-        const t = db[l] || db.ru;
-        document.getElementById('l-slow').innerText = t.slow;
-        document.getElementById('l-pdf').innerText = t.pdf;
-        document.getElementById('l-dict').innerText = t.dict;
-        document.getElementById('l-al').innerText = t.al;
-        document.getElementById('l-il').innerText = t.il;
-        document.getElementById('opt-study').innerText = t.study;
-        document.getElementById('opt-master').innerText = t.master;
-        document.getElementById('opt-test').innerText = t.test;
-        document.getElementById('l-timeup').innerText = t.up;
-        if(audio.paused) document.getElementById('status').innerText = t.ready;
-    }
-
-    // ИСПРАВЛЕННЫЙ РЕСАЙЗЕР (МАГНИТНЫЙ)
-    const p = document.getElementById('dict-panel');
-    const r = document.getElementById('resizer');
-    let isR = false;
-
-    r.addEventListener('mousedown', () => isR = true);
-    document.addEventListener('mouseup', () => isR = false);
+    // ИСПРАВЛЕННЫЙ РЕСАЙЗЕР (ЗАКРЫВАЕТСЯ ВСЕГДА)
+    resizer.addEventListener('mousedown', (e) => { isResizing = true; document.body.style.cursor = 'col-resize'; });
+    document.addEventListener('mouseup', () => { isResizing = false; document.body.style.cursor = 'default'; });
     document.addEventListener('mousemove', (e) => {
-        if(!isR) return;
-        let w = window.innerWidth - e.clientX;
-        
-        // Магнитное закрытие: если ширина меньше 50px, шторка схлопывается
-        if(w < 50) {
-            p.style.width = '0px';
-            p.style.borderLeft = "0px solid transparent";
-        } else if(w < window.innerWidth * 0.85) {
-            p.style.width = w + 'px';
-            p.style.borderLeft = "10px solid #d4af37";
-        }
+        if (!isResizing) return;
+        let width = window.innerWidth - e.clientX;
+        if (width < 40) { panel.style.width = '0px'; panel.style.borderLeft = '0px'; }
+        else if (width < window.innerWidth * 0.9) { panel.style.width = width + 'px'; panel.style.borderLeft = '10px solid #d4af37'; }
     });
 
-    function toggle() { audio.paused ? audio.play() : audio.pause(); }
-    function tempo() { audio.playbackRate = (audio.playbackRate === 1) ? 0.8 : 1; document.getElementById('slowBtn').classList.toggle('active', audio.playbackRate === 0.8); }
-    function setI(u) { document.getElementById('cover').style.backgroundImage = u ? `url(${u})` : 'none'; document.getElementById('cover').innerText = u ? '' : '🎵'; }
-    function loadD(u) { if(u.trim()) { document.getElementById('frame').src = u; p.style.width = '500px'; p.style.borderLeft = "10px solid #d4af37"; } }
-    function cls(id, type) { 
-        document.getElementById(id).value = ''; 
-        if(type==='aud') audio.src=''; if(type==='img') setI(''); if(type==='pdf') { document.getElementById('frame').src='about:blank'; p.style.width='0px'; p.style.borderLeft='0px'; }
+    function togglePlay() { audio.paused ? audio.play() : audio.pause(); }
+    function toggleSlow() { 
+        audio.playbackRate = audio.playbackRate === 1 ? 0.8 : 1;
+        document.getElementById('slowBtn').classList.toggle('active', audio.playbackRate === 0.8);
+    }
+    function setCover(u) { 
+        const c = document.getElementById('cover');
+        c.style.backgroundImage = u ? `url(${u})` : 'none';
+        c.innerText = u ? '' : '🎵';
+    }
+    function loadDict(u) { if(u) { document.getElementById('frame').src = u; panel.style.width = '450px'; panel.style.borderLeft = '10px solid #d4af37'; } }
+    
+    function clearField(id) { 
+        const el = document.getElementById(id); el.value = ''; 
+        if(id === 'u-aud' || id === 'f-aud') audio.src = '';
+        if(id === 'u-img' || id === 'f-img') setCover('');
+        if(id === 'u-dict' || id === 'f-pdf') { document.getElementById('frame').src = 'about:blank'; panel.style.width = '0px'; panel.style.borderLeft = '0px'; }
     }
 
-    document.getElementById('f-pdf').onchange = (e) => { 
-        if(e.target.files[0]) { 
-            document.getElementById('frame').src = URL.createObjectURL(e.target.files[0]) + "#view=FitH"; 
-            p.style.width = '500px'; 
-            p.style.borderLeft = "10px solid #d4af37"; 
-        }
-    };
+    document.getElementById('f-pdf').onchange = (e) => { if(e.target.files[0]) { document.getElementById('frame').src = URL.createObjectURL(e.target.files[0]) + "#view=FitH"; panel.style.width = '500px'; panel.style.borderLeft = '10px solid #d4af37'; } };
+    document.getElementById('f-aud').onchange = (e) => { if(e.target.files[0]) audio.src = URL.createObjectURL(e.target.files[0]); };
+    document.getElementById('f-img').onchange = (e) => { if(e.target.files[0]) setCover(URL.createObjectURL(e.target.files[0])); };
 
     audio.ontimeupdate = () => {
-        const pr = document.getElementById('prog'); pr.max = audio.duration || 0; pr.value = audio.currentTime;
-        const f = s => new Date(s * 1000).toISOString().substr(14, 5);
-        document.getElementById('time-txt').innerText = `${f(audio.currentTime)} / ${f(audio.duration || 0)}`;
+        const p = document.getElementById('prog'); p.max = audio.duration || 0; p.value = audio.currentTime;
+        const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+        document.getElementById('time-display').innerText = `${fmt(audio.currentTime)} / ${fmt(audio.duration || 0)}`;
     };
 
-    audio.onplay = () => { document.getElementById('play-btn').innerText = '⏸'; document.getElementById('status').innerText = (db[document.getElementById('langSelect').value] || db.ru).play; };
-    audio.onpause = () => { document.getElementById('play-btn').innerText = '▶'; document.getElementById('status').innerText = (db[document.getElementById('langSelect').value] || db.ru).pause; };
-
-    function setMode() {
-        const m = document.getElementById('modeSelect').value;
-        audio.loop = (m === 'master');
-        const isT = (m === 'test');
-        document.getElementById('btn-back').style.display = isT ? 'none' : 'block';
-        document.getElementById('btn-next').style.display = isT ? 'none' : 'block';
-        if(isT) setTimeout(() => { if(document.getElementById('modeSelect').value === 'test') { audio.pause(); document.getElementById('test-lock').style.display = 'flex'; } }, 120000);
-    }
-
-    translate();
+    audio.onplay = () => { document.getElementById('play-btn').innerText = '⏸'; document.getElementById('status').innerText = 'PLAYING'; };
+    audio.onpause = () => { document.getElementById('play-btn').innerText = '▶'; document.getElementById('status').innerText = 'PAUSED'; };
 </script>
 </body>
 </html>
