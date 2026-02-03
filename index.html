@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <title>AUDIO STUDIO PRO</title>
@@ -18,20 +18,21 @@
 
         /* --- PLAYER --- */
         .player-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; position: relative; }
-        #status { font-weight: 900; color: var(--accent); letter-spacing: 2px; margin-bottom: 15px; font-size: 1.3rem; }
         .cover { width: 85%; max-width: 500px; aspect-ratio: 16/9; border-radius: 30px; background: white; border: 10px solid white; box-shadow: 0 20px 50px rgba(184,134,11,0.15); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: #d4af37; background-size: cover; background-position: center; margin-bottom: 25px; }
 
         /* --- CONTROLS --- */
         #prog { width: 85%; max-width: 500px; accent-color: var(--accent); cursor: pointer; height: 8px; }
-        .time { font-weight: 900; font-size: 2rem; margin: 15px 0; color: #333; }
-        .play-btn { width: 90px; height: 90px; border-radius: 50%; background: var(--gold); color: white; border: none; font-size: 2.5rem; cursor: pointer; box-shadow: 0 10px 20px rgba(212,175,55,0.3); }
-        .slow-btn { background: #2ecc71; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; }
+        .time { font-weight: 900; font-size: 2.2rem; margin: 15px 0; color: #333; letter-spacing: -1px; }
+        .play-btn { width: 90px; height: 90px; border-radius: 50%; background: var(--gold); color: white; border: none; font-size: 2.5rem; cursor: pointer; box-shadow: 0 10px 20px rgba(212,175,55,0.3); transition: transform 0.2s; }
+        .play-btn:active { transform: scale(0.95); }
+        .slow-btn { background: #2ecc71; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 900; cursor: pointer; width: 100%; margin: 10px 0; text-transform: uppercase; }
         .slow-btn.active { background: #e67e22; }
 
         /* --- MAGNETIC PANEL --- */
         .dict-panel { width: 0px; background: white; border-left: 0px solid #d4af37; display: flex; position: relative; flex-shrink: 0; z-index: 500; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .resizer { width: 50px; cursor: col-resize; position: absolute; left: -25px; top: 0; bottom: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .resizer::after { content: '||'; color: var(--accent); font-weight: bold; font-size: 20px; opacity: 0.3; }
+        iframe { width: 100%; height: 100%; border: none; }
 
         /* --- INTERFACE --- */
         .card { background: #fff; padding: 12px; border-radius: 18px; border: 1px solid #eee; margin-bottom: 12px; }
@@ -71,7 +72,6 @@
 </div>
 
 <div class="player-zone">
-    <div id="status">READY</div>
     <div class="cover" id="cover">🎵</div>
     <input type="range" id="prog" value="0" step="0.1">
     <div class="time" id="time-display">00:00 / 00:00</div>
@@ -103,15 +103,15 @@
 <script>
     const audio = new Audio(); audio.preservesPitch = true;
     const langs = {
-        ru: { name: "Русский", lang: "ЯЗЫК", mode: "РЕЖИМ", slow: "ЗАМЕДЛЕНИЕ 0.8x", materials: "МАТЕРИАЛЫ", al: "АУДИО", il: "ФОТО", ready: "ГОТОВ", play: "ИГРАЕТ", pause: "ПАУЗА", study: "Ученик", master: "Мастер", test: "Тест" },
-        de: { name: "Deutsch", lang: "SPRACHE", mode: "MODUS", slow: "LANGSAM 0.8x", materials: "MATERIALIEN", al: "AUDIO", il: "BILD", ready: "BEREIT", play: "SPIELT", pause: "PAUSE", study: "Lernen", master: "Master", test: "Test" },
-        es: { name: "Español", lang: "IDIOMA", mode: "MODO", slow: "LENTO 0.8x", materials: "MATERIALES", al: "AUDIO", il: "IMAGEN", ready: "LISTO", play: "REPRODUCIENDO", pause: "PAUSA", study: "Estudio", master: "Maestro", test: "Prueba" },
-        pt: { name: "Português", lang: "LÍNGUA", mode: "MODO", slow: "LENTO 0.8x", materials: "MATERIAIS", al: "ÁUDIO", il: "IMAGEM", ready: "PRONTO", play: "TOCANDO", pause: "PAUSA", study: "Estudo", master: "Mestre", test: "Teste" },
-        it: { name: "Italiano", lang: "LINGUA", mode: "MODALITÀ", slow: "LENTO 0.8x", materials: "MATERIALI", al: "AUDIO", il: "IMMAGINE", ready: "PRONTO", play: "IN CORSO", pause: "PAUSA", study: "Studio", master: "Master", test: "Test" },
-        fr: { name: "Français", lang: "LANGUE", mode: "MODE", slow: "LENT 0.8x", materials: "MATÉRIELS", al: "AUDIO", il: "IMAGE", ready: "PRÊT", play: "LECTURE", pause: "PAUSE", study: "Étude", master: "Maître", test: "Test" },
-        ar: { name: "العربية", lang: "اللغة", mode: "الوضع", slow: "بطيء 0.8x", materials: "المواد", al: "صوت", il: "صورة", ready: "جاهز", play: "تشغيل", pause: "إيقاف", study: "دراسة", master: "خبير", test: "اختبار" },
-        fa: { name: "فارسی", lang: "زبان", mode: "حالت", slow: "آهسته 0.8x", materials: "منابع", al: "صدا", il: "تصویر", ready: "آماده", play: "در حال پخش", pause: "توقف", study: "آموزش", master: "استاد", test: "آزمون" },
-        hi: { name: "हिन्दी", lang: "भाषा", mode: "मोड", slow: "धीमा 0.8x", materials: "सामग्री", al: "ऑडियो", il: "चित्र", ready: "तैयार", play: "चल रहा है", pause: "विराम", study: "अध्ययन", master: "मास्टर", test: "परीक्षा" }
+        ru: { name: "Русский", lang: "ЯЗЫК", mode: "РЕЖИМ", slow: "ЗАМЕДЛЕНИЕ 0.8x", materials: "МАТЕРИАЛЫ", al: "АУДИО", il: "ФОТО", study: "Ученик", master: "Мастер", test: "Тест" },
+        de: { name: "Deutsch", lang: "SPRACHE", mode: "MODUS", slow: "LANGSAM 0.8x", materials: "MATERIALIEN", al: "AUDIO", il: "BILD", study: "Lernen", master: "Master", test: "Test" },
+        es: { name: "Español", lang: "IDIOMA", mode: "MODO", slow: "LENTO 0.8x", materials: "MATERIALES", al: "AUDIO", il: "IMAGEN", study: "Estudio", master: "Maestro", test: "Prueba" },
+        it: { name: "Italiano", lang: "LINGUA", mode: "MODALITÀ", slow: "LENTO 0.8x", materials: "MATERIALI", al: "AUDIO", il: "IMMAGINE", study: "Studio", master: "Master", test: "Test" },
+        fr: { name: "Français", lang: "LANGUE", mode: "MODE", slow: "LENT 0.8x", materials: "MATÉRIELS", al: "AUDIO", il: "IMAGE", study: "Étude", master: "Maître", test: "Test" },
+        pt: { name: "Português", lang: "LÍNGUA", mode: "MODO", slow: "LENTO 0.8x", materials: "MATERIAIS", al: "ÁUDIO", il: "IMAGEM", study: "Estudo", master: "Mestre", test: "Teste" },
+        ar: { name: "العربية", lang: "اللغة", mode: "الوضع", slow: "بطيء 0.8x", materials: "المواد", al: "صوت", il: "صورة", study: "دراسة", master: "خبير", test: "اختبار" },
+        fa: { name: "فارسی", lang: "زبان", mode: "حالت", slow: "آهسته 0.8x", materials: "منابع", al: "صدا", il: "تصویر", study: "آموزش", master: "استاد", test: "آزمون" },
+        hi: { name: "हिन्दी", lang: "भाषा", mode: "मोड", slow: "धीमा 0.8x", materials: "सामग्री", al: "ऑडियो", il: "चित्र", study: "अध्ययन", master: "मास्टर", test: "परीक्षा" }
     };
 
     const sel = document.getElementById('langSelect');
@@ -121,17 +121,16 @@
         const l = sel.value; const t = langs[l];
         ['lang','mode','slow','materials','al','il'].forEach(id => document.getElementById('l-'+id).innerText = t[id]);
         ['study','master','test'].forEach(m => document.getElementById('opt-'+m).innerText = t[m]);
-        document.getElementById('status').innerText = audio.paused ? t.ready : t.play;
         document.getElementById('u-dict').placeholder = l === 'ru' ? "Ссылка на словарь" : "Dictionary URL";
     }
 
-    // --- MAGNETIC CLOSING LOGIC ---
+    // --- MAGNETIC CLOSING ---
     const p = document.getElementById('dict-panel'), r = document.getElementById('resizer');
     let isR = false;
     r.addEventListener('mousedown', () => isR = true);
     document.addEventListener('mouseup', () => { 
         isR = false; 
-        if(parseInt(p.style.width) < 150) closePanel(); 
+        if(parseInt(p.style.width) < 180) closePanel(); 
     });
     document.addEventListener('mousemove', (e) => {
         if(!isR) return;
@@ -141,7 +140,7 @@
             p.style.width = w + 'px';
             p.style.borderLeft = '10px solid #d4af37';
         }
-        if(w > window.innerWidth * 0.85) closePanel();
+        if(w > window.innerWidth * 0.9) closePanel();
     });
 
     function closePanel() {
@@ -179,8 +178,8 @@
         document.getElementById('time-display').innerText = `${f(audio.currentTime)} / ${f(audio.duration || 0)}`;
     };
 
-    audio.onplay = () => { document.getElementById('play-btn').innerText = '⏸'; translateUI(); };
-    audio.onpause = () => { document.getElementById('play-btn').innerText = '▶'; translateUI(); };
+    audio.onplay = () => { document.getElementById('play-btn').innerText = '⏸'; };
+    audio.onpause = () => { document.getElementById('play-btn').innerText = '▶'; };
     function setMode() { audio.loop = (document.getElementById('modeSelect').value === 'master'); }
     
     translateUI();
