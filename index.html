@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>AUDIO STUDIO PRO | FULL PLAYER</title>
+    <title>AUDIO STUDIO PRO | UNIVERSAL LANG</title>
     <style>
         :root { 
             --gold-line: #d4af37;
@@ -23,30 +23,26 @@
         .drawer-triggers { position: fixed; right: 0; top: 40%; display: flex; flex-direction: column; gap: 10px; z-index: 120; }
         .t-btn { width: 45px; height: 60px; border: none; border-radius: 12px 0 0 12px; cursor: pointer; color: white; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; }
 
-        /* ЛЕВАЯ ПАНЕЛЬ */
-        .sidebar-left { width: 310px; border-right: 1px solid #ddd; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: white; overflow-y: auto; flex-shrink: 0; }
+        /* ПАНЕЛЬ УПРАВЛЕНИЯ */
+        .sidebar-left { width: 310px; border-right: 1px solid #ddd; padding: 20px; display: flex; flex-direction: column; gap: 10px; background: white; overflow-y: auto; flex-shrink: 0; }
         .player-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 30% 20%, #ffffff 0%, #f4faff 45%, #eef8ff 100%); transition: margin-right 0.4s; }
         body.dict-open .player-zone, body.mat-open .player-zone { margin-right: 500px; }
 
         .card { border: 2px solid var(--gold-line); border-radius: 15px; padding: 10px; background: white; margin-bottom: 5px; }
         label { font-size: 0.7rem; font-weight: 900; color: var(--accent-gold); display: block; margin-bottom: 4px; text-transform: uppercase; }
         
-        .input-row { display: flex; align-items: center; gap: 5px; background: #f9f9f9; padding: 5px 10px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 5px; height: 32px; }
+        .input-row { display: flex; align-items: center; gap: 5px; background: #f9f9f9; padding: 5px 10px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 5px; height: 32px; position: relative; }
         input, select { border: none; background: transparent; width: 100%; outline: none; font-size: 0.85rem; font-weight: bold; color: var(--text-main); }
 
-        .go-btn { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--gold-line); display: flex; align-items: center; }
+        .go-btn { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--gold-line); padding: 0; }
         .x-btn { color: #ff8e8e; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 1rem; }
 
-        /* ИНТЕРФЕЙС ПЛЕЕРА */
-        .cover { width: 400px; height: 225px; border-radius: 20px; border: 3px solid var(--gold-line); background: white; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 5rem; background-size: cover; background-position: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        
-        .controls-main { display: flex; align-items: center; gap: 30px; margin-top: 10px; }
-        .play-btn { width: 70px; height: 70px; border-radius: 50%; background: var(--gold-grad); border: none; color: white; font-size: 1.8rem; cursor: pointer; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); display: flex; align-items: center; justify-content: center; }
-        .nav-btn { background: none; border: none; font-size: 2.5rem; color: var(--text-main); cursor: pointer; opacity: 0.8; transition: 0.2s; }
-        .nav-btn:hover { opacity: 1; transform: scale(1.1); }
-
+        /* ПЛЕЕР */
+        .cover { width: 400px; height: 225px; border-radius: 20px; border: 3px solid var(--gold-line); background: #fff; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 5rem; background-size: cover; background-position: center; }
+        .controls { display: flex; align-items: center; gap: 30px; margin-top: 10px; }
+        .play-btn { width: 70px; height: 70px; border-radius: 50%; background: var(--gold-grad); border: none; color: white; font-size: 1.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .time-box { width: 400px; display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; color: var(--accent-gold); margin-bottom: 5px; }
-        #prog { width: 400px; height: 6px; cursor: pointer; accent-color: var(--gold-line); }
+        #prog { width: 400px; accent-color: var(--gold-line); cursor: pointer; }
 
         .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 85%; margin-top: 25px; }
         .file-text { font-size: 0.8rem; color: #78a1c4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
@@ -60,16 +56,13 @@
 </div>
 
 <div class="sidebar-left">
-    <div style="text-align:center"><img src="https://irinschensmagen-alt.github.io/Audioplayer-Studio-Pro/logo.png" style="width:60px; margin-bottom:10px;"></div>
+    <div style="text-align:center"><img src="https://irinschensmagen-alt.github.io/Audioplayer-Studio-Pro/logo.png" style="width:60px; margin-bottom:5px;"></div>
+    
     <div class="card"><label id="l-lang"></label><select id="langSelect" onchange="updateUI()"></select></div>
     
     <div class="card">
         <label id="l-mat"></label>
-        <div class="input-row">
-            <input type="text" id="u-mat" placeholder="Link"> 
-            <button class="go-btn" onclick="setMat(document.getElementById('u-mat').value)">📎</button> 
-            <button class="x-btn" onclick="clearMat()">✖</button>
-        </div>
+        <div class="input-row"><input type="text" id="u-mat" placeholder="Link"><button class="go-btn" onclick="setMat(document.getElementById('u-mat').value)">📎</button></div>
         <div class="input-row">
             <input type="file" style="position:absolute; opacity:0; width:100%; cursor:pointer" onchange="handleFile(this,'mat')">
             <span id="f-mat-n" class="file-text">📁</span>
@@ -78,15 +71,11 @@
 
     <div class="card"><label id="l-mode"></label><select id="modeSelect"><option value="study" id="opt-study"></option><option value="master" id="opt-master"></option><option value="test" id="opt-test"></option></select></div>
     
-    <button id="slowBtn" style="background:#5da9e1; color:white; border:none; padding:10px; border-radius:12px; font-weight:900; margin-bottom:10px; cursor:pointer;">🐢 <span id="l-slow"></span></button>
+    <button id="slowBtn" style="background:#5da9e1; color:white; border:none; padding:10px; border-radius:12px; font-weight:900; margin-bottom:5px; cursor:pointer;">🐢 <span id="l-slow"></span></button>
 
     <div class="card">
         <label id="l-dict"></label>
-        <div class="input-row">
-            <input type="text" id="u-dict" placeholder="Link">
-            <button class="go-btn" onclick="setDict(document.getElementById('u-dict').value)">📎</button>
-            <button class="x-btn" onclick="resetDict()">✖</button>
-        </div>
+        <div class="input-row"><input type="text" id="u-dict"><button class="go-btn" onclick="setDict(document.getElementById('u-dict').value)">📎</button><button class="x-btn" onclick="resetDict()">✖</button></div>
     </div>
 </div>
 
@@ -95,41 +84,24 @@
 
 <div class="player-zone">
     <div class="cover" id="cover">♫</div>
-
-    <div class="time-box">
-        <span id="time-cur">0:00</span>
-        <span id="time-dur">0:00</span>
-    </div>
-    <input type="range" id="prog" value="0" min="0" step="0.1" oninput="seek(this.value)">
-
-    <div class="controls-main">
-        <button class="nav-btn" onclick="rewind(-10)">⏪</button>
+    <div class="time-box"><span id="time-cur">0:00</span><span id="time-dur">0:00</span></div>
+    <input type="range" id="prog" value="0" min="0" step="0.1" oninput="audio.currentTime=this.value">
+    <div class="controls">
+        <button class="go-btn" style="font-size:2.5rem; color:var(--text-main)" onclick="audio.currentTime-=10">⏪</button>
         <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
-        <button class="nav-btn" onclick="rewind(10)">⏩</button>
+        <button class="go-btn" style="font-size:2.5rem; color:var(--text-main)" onclick="audio.currentTime+=10">⏩</button>
     </div>
 
     <div class="grid-inputs">
         <div class="card">
             <label id="l-aud"></label>
-            <div class="input-row">
-                <input type="text" id="u-aud-main" placeholder="Audio Link"> 
-                <button class="go-btn" onclick="setAudio(document.getElementById('u-aud-main').value)">📎</button>
-            </div>
-            <div class="input-row">
-                <input type="file" accept="audio/*" style="position:absolute; opacity:0; width:100%; cursor:pointer" onchange="handleFile(this,'aud')">
-                <span id="f-aud-n" class="file-text">📁</span>
-            </div>
+            <div class="input-row"><input type="text" id="u-aud-main" placeholder="URL"><button class="go-btn" onclick="setAudio(document.getElementById('u-aud-main').value)">📎</button></div>
+            <div class="input-row"><input type="file" style="position:absolute; opacity:0; width:100%; cursor:pointer" onchange="handleFile(this,'aud')"><span id="f-aud-n" class="file-text">📁</span></div>
         </div>
         <div class="card">
             <label id="l-img"></label>
-            <div class="input-row">
-                <input type="text" id="u-img-main" placeholder="Image Link"> 
-                <button class="go-btn" onclick="setImg(document.getElementById('u-img-main').value)">📎</button>
-            </div>
-            <div class="input-row">
-                <input type="file" accept="image/*" style="position:absolute; opacity:0; width:100%; cursor:pointer" onchange="handleFile(this,'img')">
-                <span id="f-img-n" class="file-text">📁</span>
-            </div>
+            <div class="input-row"><input type="text" id="u-img-main" placeholder="URL"><button class="go-btn" onclick="setImg(document.getElementById('u-img-main').value)">📎</button></div>
+            <div class="input-row"><input type="file" style="position:absolute; opacity:0; width:100%; cursor:pointer" onchange="handleFile(this,'img')"><span id="f-img-n" class="file-text">📁</span></div>
         </div>
     </div>
 </div>
@@ -137,48 +109,23 @@
 <script>
     const DEFAULT_DICT = "https://www.wiktionary.org/";
     const audio = new Audio();
-    const playBtn = document.getElementById('playBtn');
-    const prog = document.getElementById('prog');
-    const timeCur = document.getElementById('time-cur');
-    const timeDur = document.getElementById('time-dur');
-
-    // ЛОГИКА ПЛЕЕРА
-    function togglePlay() {
-        if (!audio.src) return;
-        if (audio.paused) { audio.play(); playBtn.innerText = '⏸'; }
-        else { audio.pause(); playBtn.innerText = '▶'; }
-    }
-
-    function rewind(sec) { audio.currentTime += sec; }
-
-    function seek(val) { audio.currentTime = val; }
-
-    audio.ontimeupdate = () => {
-        prog.value = audio.currentTime;
-        timeCur.innerText = formatTime(audio.currentTime);
-    };
-
-    audio.onloadedmetadata = () => {
-        prog.max = audio.duration;
-        timeDur.innerText = formatTime(audio.duration);
-    };
-
-    function formatTime(s) {
-        let min = Math.floor(s / 60);
-        let sec = Math.floor(s % 60);
-        return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-    }
-
-    // ОСТАЛЬНАЯ ЛОГИКА
     const langs = {
         ru: { n:"Русский", l:"Язык", m:"Материалы", md:"Режим", d:"Словарь URL", s:"Ученик", ms:"Мастер", t:"Тест", a:"Аудио", i:"Картинка", f:"Выбрать файл", sl:"Замедление 0.8x" },
         en: { n:"English", l:"Language", m:"Materials", md:"Mode", d:"Dictionary URL", s:"Study", ms:"Master", t:"Test", a:"Audio", i:"Image", f:"Choose File", sl:"Slow 0.8x" },
-        de: { n:"Deutsch", l:"Sprache", m:"Materialien", md:"Modus", d:"Wörterbuch URL", s:"Lerner", ms:"Meister", t:"Test", a:"Audio", i:"Bild", f:"Datei wählen", sl:"Tempo 0.8x" }
-        // ... другие языки также вшиты
+        de: { n:"Deutsch", l:"Sprache", m:"Materialien", md:"Modus", d:"Wörterbuch URL", s:"Lerner", ms:"Meister", t:"Test", a:"Audio", i:"Bild", f:"Datei wählen", sl:"Tempo 0.8x" },
+        ja: { n:"日本語", l:"言語", m:"教材", md:"モード", d:"辞書URL", s:"学習", ms:"マスター", t:"テスト", a:"音声", i:"画像", f:"ファイルを選択", sl:"スロー 0.8x" },
+        zh: { n:"中文", l:"语言", m:"材料", md:"模式", d:"词典URL", s:"学习", ms:"大师", t:"测试", a:"音频", i:"图片", f:"选择文件", sl:"慢速 0.8x" },
+        fa: { n:"فارسی", l:"زبان", m:"مواد", md:"حالت", d:"لینک دیکشنری", s:"مطالعه", ms:"استاد", t:"تست", a:"صوتی", i:"تصویر", f:"انتخاب فایل", sl:"آهسته ۰.۸x" },
+        hi: { n:"हिन्दी", l:"भाषा", m:"सामग्री", md:"मोड", d:"शब्दकोश URL", s:"अध्ययन", ms:"मास्टर", t:"परीक्षा", a:"ऑдио", i:"картинка", f:"फ़айл चुनें", sl:"धीमा 0.8x" },
+        ar: { n:"العربية", l:"اللغة", m:"المواد", md:"الوضع", d:"قاموس URL", s:"دراسة", ms:"ماستر", t:"اختبار", a:"صوت", i:"صورة", f:"اختيار ملف", sl:"بطيء 0.8x" },
+        pt: { n:"Português", l:"Idioma", m:"Materiais", md:"Modo", d:"Dicionário URL", s:"Estudo", ms:"Mestre", t:"Teste", a:"Áudio", i:"Imagem", f:"Escolher arquivo", sl:"Lento 0.8x" },
+        fr: { n:"Français", l:"Langue", m:"Matériels", md:"Mode", d:"URL Dictionnaire", s:"Étude", ms:"Maître", t:"Test", a:"Audio", i:"Image", f:"Choisir un fichier", sl:"Lent 0.8x" },
+        es: { n:"Español", l:"Idioma", m:"Materiales", md:"Modo", d:"URL Diccionario", s:"Estudio", ms:"Maestro", t:"Prueba", a:"Audio", i:"Imagen", f:"Elegir archivo", sl:"Lento 0.8x" },
+        it: { n:"Italiano", l:"Lingua", m:"Materiali", md:"Modo", d:"URL Dizionario", s:"Studio", ms:"Master", t:"Test", a:"Audio", i:"Immagine", f:"Scegli file", sl:"Lento 0.8x" }
     };
 
     function updateUI() {
-        const t = langs[document.getElementById('langSelect').value] || langs.en;
+        const t = langs[document.getElementById('langSelect').value];
         document.getElementById('l-lang').innerText = t.l; document.getElementById('l-mat').innerText = t.m;
         document.getElementById('l-mode').innerText = t.md; document.getElementById('l-dict').innerText = t.d;
         document.getElementById('l-aud').innerText = t.a; document.getElementById('l-img').innerText = t.i;
@@ -187,22 +134,36 @@
         ['f-mat-n', 'f-aud-n', 'f-img-n'].forEach(id => { if(document.getElementById(id).innerText.includes('📁')) document.getElementById(id).innerText = "📁 " + t.f; });
     }
 
-    function setAudio(v) { if(v) { audio.src = v; playBtn.innerText = '▶'; } }
-    function setImg(v) { if(v) { document.getElementById('cover').style.backgroundImage = `url(${v})`; document.getElementById('cover').innerText = ''; } }
-    function setDict(v) { document.getElementById('dict-frame').src = v.startsWith('http') ? v : 'https://'+v; toggleDrawer('dict'); }
-    function resetDict() { document.getElementById('u-dict').value = DEFAULT_DICT; setDict(DEFAULT_DICT); }
-    function setMat(v) { document.getElementById('mat-frame').src = v.startsWith('http') ? v : 'https://'+v; toggleDrawer('mat'); }
-    function toggleDrawer(t) { document.body.classList.remove('dict-open', 'mat-open'); document.body.classList.add(t + '-open'); }
-
-    function handleFile(input, type) { 
-        if(!input.files[0]) return;
-        const url = URL.createObjectURL(input.files[0]);
-        if(type === 'mat') { document.getElementById('mat-frame').src = url; document.getElementById('f-mat-n').innerText = input.files[0].name; toggleDrawer('mat'); }
-        if(type === 'aud') { audio.src = url; document.getElementById('f-aud-n').innerText = input.files[0].name; playBtn.innerText = '▶'; }
-        if(type === 'img') { setImg(url); document.getElementById('f-img-n').innerText = input.files[0].name; }
+    function togglePlay() { 
+        if(!audio.src) return; 
+        if(audio.paused) { audio.play(); document.getElementById('playBtn').innerText='⏸'; }
+        else { audio.pause(); document.getElementById('playBtn').innerText='▶'; }
     }
 
-    function clearMat() { document.getElementById('u-mat').value=''; document.getElementById('mat-frame').src='about:blank'; }
+    audio.ontimeupdate = () => { 
+        document.getElementById('prog').value = audio.currentTime; 
+        document.getElementById('time-cur').innerText = fmt(audio.currentTime); 
+    };
+    audio.onloadedmetadata = () => { 
+        document.getElementById('prog').max = audio.duration; 
+        document.getElementById('time-dur').innerText = fmt(audio.duration); 
+    };
+    function fmt(s) { let m=Math.floor(s/60); let sc=Math.floor(s%60); return `${m}:${sc<10?'0':''}${sc}`; }
+
+    function setAudio(v) { if(v) { audio.src = v; document.getElementById('playBtn').innerText='▶'; } }
+    function setImg(v) { if(v) { document.getElementById('cover').style.backgroundImage = `url(${v})`; document.getElementById('cover').innerText=''; } }
+    function setDict(v) { document.getElementById('dict-frame').src = v.startsWith('http')?v:'https://'+v; toggleDrawer('dict'); }
+    function setMat(v) { document.getElementById('mat-frame').src = v.startsWith('http')?v:'https://'+v; toggleDrawer('mat'); }
+    function resetDict() { document.getElementById('u-dict').value=DEFAULT_DICT; setDict(DEFAULT_DICT); }
+    function toggleDrawer(t) { document.body.classList.remove('dict-open','mat-open'); document.body.classList.add(t+'-open'); }
+
+    function handleFile(i, t) {
+        if(!i.files[0]) return;
+        const u = URL.createObjectURL(i.files[0]);
+        if(t==='mat') { document.getElementById('mat-frame').src=u; document.getElementById('f-mat-n').innerText=i.files[0].name; toggleDrawer('mat'); }
+        if(t==='aud') { audio.src=u; document.getElementById('f-aud-n').innerText=i.files[0].name; }
+        if(t==='img') { setImg(u); document.getElementById('f-img-n').innerText=i.files[0].name; }
+    }
 
     const sel = document.getElementById('langSelect');
     Object.keys(langs).forEach(c => sel.add(new Option(langs[c].n, c)));
