@@ -2,116 +2,139 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>AUDIO STUDIO PRO | CODE EXPORTER</title>
+    <title>AUDIO STUDIO PRO | FINAL EDITOR</title>
     <style>
-        :root { 
-            --gold: #d4af37;
-            --blue: #5da9e1;
-            --bg: #f0f4f8;
-        }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); color: #1a4a7a; }
+        :root { --gold: #d4af37; --blue: #5da9e1; --text: #b8860b; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: #fcfdfe; overflow: hidden; }
 
-        /* ОКНО КОДА СЛЕВА */
-        .code-exporter { width: 350px; background: #2c3e50; color: #ecf0f1; display: flex; flex-direction: column; padding: 15px; border-right: 2px solid var(--gold); }
-        .code-area { flex: 1; background: #1e272e; color: #00d8ff; border: 1px solid #444; border-radius: 8px; padding: 10px; font-family: 'Courier New', monospace; font-size: 11px; resize: none; margin-top: 10px; }
-        .copy-btn { background: var(--gold); border: none; padding: 10px; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        .copy-btn:hover { background: #b8860b; }
+        /* ЛЕВАЯ ПАНЕЛЬ (РЕДАКТОР) */
+        .sidebar-left { width: 320px; border-right: 1px solid #ddd; background: white; display: flex; flex-direction: column; padding: 15px; flex-shrink: 0; z-index: 10; }
+        .card { border: 1.5px solid var(--gold); border-radius: 12px; padding: 10px; margin-bottom: 10px; }
+        label { font-size: 10px; font-weight: 900; color: var(--text); text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .inp-group { background: #f9f9f9; border-radius: 8px; padding: 4px 8px; display: flex; align-items: center; gap: 5px; margin-bottom: 5px; border: 1px solid #eee; }
+        input, select { border: none; background: transparent; width: 100%; outline: none; font-size: 13px; font-weight: 600; color: #1a4a7a; }
+        
+        /* ПРАВЫЕ ШТОРКИ */
+        .drawer { position: fixed; right: -505px; top: 0; width: 500px; height: 100%; background: white; transition: 0.4s ease; z-index: 100; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
+        .drawer-dict { border-left: 4px solid var(--gold); }
+        .drawer-mat { border-left: 4px solid var(--blue); }
+        body.dict-open .drawer-dict { right: 0; }
+        body.mat-open .drawer-mat { right: 0; }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        /* РЕДАКТОР */
-        .sidebar-edit { width: 300px; background: white; padding: 20px; border-right: 1px solid #ddd; overflow-y: auto; }
-        .player-preview { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .drawer-tabs { position: fixed; right: 0; top: 40%; display: flex; flex-direction: column; gap: 10px; z-index: 110; }
+        .tab-btn { width: 40px; height: 50px; border: none; border-radius: 8px 0 0 8px; color: white; cursor: pointer; font-size: 1.2rem; }
 
-        .card { border: 2px solid var(--gold); border-radius: 12px; padding: 10px; margin-bottom: 10px; background: white; }
-        label { font-size: 10px; font-weight: 900; color: var(--gold); text-transform: uppercase; display: block; }
-        .input-row { display: flex; align-items: center; gap: 5px; background: #f9f9f9; padding: 5px; border-radius: 6px; margin-top: 5px; }
-        input, select { border: none; background: transparent; width: 100%; outline: none; font-weight: bold; }
+        /* ЦЕНТРАЛЬНАЯ ЗОНА */
+        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.4s; }
+        body.dict-open .main-content, body.mat-open .main-content { margin-right: 500px; }
 
-        /* ПЛЕЕР ПРЕВЬЮ */
-        .cover { width: 350px; height: 200px; border: 3px solid var(--gold); border-radius: 20px; background: white; background-size: cover; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
-        .play-btn { width: 60px; height: 60px; border-radius: 50%; background: var(--gold); border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        /* ОКНО КОДА ВНИЗУ */
+        .export-box { margin-top: auto; padding-top: 10px; border-top: 1px solid #eee; }
+        .code-res { width: 100%; height: 50px; font-family: monospace; font-size: 10px; background: #f4f4f4; border: 1px solid #ccc; padding: 5px; resize: none; }
+        .copy-btn { width: 100%; background: var(--gold); color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 5px; }
+
+        /* КНОПКИ ПЛЕЕРА */
+        .play-main { width: 60px; height: 60px; border-radius: 50%; background: var(--gold); border: none; color: white; cursor: pointer; }
+        .nav-btn { background: #0078d4; color: white; border: 2px solid #000; width: 40px; height: 35px; cursor: pointer; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-<aside class="code-exporter">
-    <h3 style="margin:0; font-size: 16px;">GENIALLY CODE</h3>
-    <p style="font-size: 12px; opacity: 0.8;">Скопируйте этот код и вставьте в Genially (Insert -> Others):</p>
-    <textarea class="code-area" id="finalCode" readonly></textarea>
-    <button class="copy-btn" onclick="copyCode()">Copy to Clipboard</button>
-</aside>
+<div class="drawer-tabs">
+    <button class="tab-btn" style="background:var(--gold)" onclick="toggleD('dict')">📖</button>
+    <button class="tab-btn" style="background:var(--blue)" onclick="toggleD('mat')">📂</button>
+</div>
 
-<aside class="sidebar-edit">
-    <div style="text-align:center; margin-bottom: 15px;"><img src="https://irinschensmagen-alt.github.io/Audioplayer-Studio-Pro/logo.png" width="50"></div>
+<div class="drawer drawer-dict"><iframe id="f-dict"></iframe></div>
+<div class="drawer drawer-mat"><iframe id="f-mat"></iframe></div>
+
+<aside class="sidebar-left">
+    <div style="text-align:center; margin-bottom:10px;"><img src="https://irinschensmagen-alt.github.io/Audioplayer-Studio-Pro/logo.png" width="40"></div>
     
-    <div class="card"><label id="l-lang">Language</label><select id="langSel" onchange="updateEditor()"></select></div>
+    <div class="card"><label id="l-lang">ЯЗЫК</label><select id="langSel" onchange="upUI()"></select></div>
     
     <div class="card">
-        <label id="l-mat">Materials</label>
-        <div class="input-row"><input type="text" id="i-mat" placeholder="Link"><button style="background:none; border:none; cursor:pointer;" onclick="setPreviewMat()">📎</button></div>
+        <label id="l-mat">МАТЕРИАЛЫ</label>
+        <div class="inp-group"><input type="text" id="u-mat" placeholder="Link" oninput="gen()"><button onclick="loadM()">📎</button></div>
     </div>
 
-    <div class="card"><label id="l-mode">Mode</label><select id="mode"><option value="study">Study</option><option value="master">Master</option><option value="test">Test</option></select></div>
+    <div class="card"><label id="l-mode">РЕЖИМ</label><select id="modeSel" onchange="gen()"></select></div>
     
-    <button style="width:100%; background:var(--blue); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; margin-bottom:10px;">🐢 SLOW 0.8x</button>
+    <button style="width:100%; background:var(--blue); color:white; border:none; padding:8px; border-radius:8px; font-weight:bold; margin-bottom:10px;">🐢 <span id="l-slow">SLOW</span></button>
 
     <div class="card">
-        <label id="l-dict">Dictionary</label>
-        <div class="input-row"><input type="text" id="i-dict" value="https://www.wiktionary.org/"><button style="background:none; border:none; cursor:pointer;">📎</button></div>
+        <label id="l-dict">СЛОВАРЬ URL</label>
+        <div class="inp-group"><input type="text" id="u-dict" value="https://www.wiktionary.org/" oninput="gen()"><button onclick="loadD()">📎</button></div>
+    </div>
+
+    <div class="export-box">
+        <label>IFRAME CODE:</label>
+        <textarea id="res-code" class="code-res" readonly></textarea>
+        <button class="copy-btn" onclick="copyC()">Copy Code</button>
     </div>
 </aside>
 
-<main class="player-preview">
-    <div class="cover" id="cover">♫</div>
-    <div style="width:350px; display:flex; justify-content:space-between; margin-top:10px; font-weight:bold; color:var(--gold);"><span>0:00</span><span>0:00</span></div>
+<main class="main-content">
+    <div id="cover" style="width:350px; height:200px; border:2px solid var(--gold); border-radius:15px; background:white; display:flex; align-items:center; justify-content:center; font-size:3rem; background-size:cover;">♫</div>
+    <div style="width:350px; display:flex; justify-content:space-between; margin-top:10px; font-weight:bold; color:var(--gold); font-size:12px;"><span>0:00</span><span>0:00</span></div>
     <input type="range" style="width:350px; accent-color:var(--gold);">
     <div style="display:flex; gap:20px; margin-top:10px;">
-        <span style="font-size:2rem;">⏪</span>
-        <button class="play-btn">▶</button>
-        <span style="font-size:2rem;">⏩</span>
+        <button class="nav-btn">⏪</button>
+        <button class="play-main">▶</button>
+        <button class="nav-btn">⏩</button>
     </div>
 </main>
 
 <script>
-    const codeArea = document.getElementById('finalCode');
-    
-    // Этот скрипт генерирует "чистый" код для Genially
-    function generateCode() {
-        const template = `<div style="width:100%; height:100%; min-height:500px; display:flex; background:#fcfdfe; border:2px solid #d4af37; border-radius:15px; overflow:hidden; font-family:sans-serif;">
-    <div style="width:240px; background:#fff; border-right:1px solid #eee; padding:15px; font-size:12px;">
-        <label style="color:#b8860b; font-weight:900;">LANGUAGE</label>
-        <select id="g-lang" style="width:100%; margin:5px 0 15px; border-radius:5px; border:1px solid #d4af37;"></select>
-        <label style="color:#b8860b; font-weight:900;">MODE</label>
-        <select style="width:100%; margin:5px 0 15px; border-radius:5px; border:1px solid #d4af37;">
-            <option>Study</option><option>Master</option><option>Test</option>
-        </select>
-        <button style="width:100%; background:#5da9e1; color:white; border:none; padding:8px; border-radius:5px; font-weight:bold;">🐢 SLOW 0.8x</button>
-    </div>
-    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px;">
-        <div style="width:80%; height:180px; border:3px solid #d4af37; border-radius:15px; background-size:cover; display:flex; align-items:center; justify-content:center; font-size:3rem;">♫</div>
-        <input type="range" style="width:80%; accent-color:#d4af37; margin-top:20px;">
-        <div style="display:flex; gap:20px; margin-top:10px;">
-            <button style="background:none; border:none; font-size:2rem;">⏪</button>
-            <button style="width:50px; height:50px; border-radius:50%; background:#d4af37; color:white; border:none;">▶</button>
-            <button style="background:none; border:none; font-size:2rem;">⏩</button>
-        </div>
-    </div>
-</div>`;
-        codeArea.value = template;
+    const langs = {
+        ru: { n:"Русский", l:"Язык", m:"Материалы", md:"Режим", d:"Словарь URL", s:"Ученик", ms:"Мастер", t:"Тест", sl:"Замедление 0.8x" },
+        en: { n:"English", l:"Language", m:"Materials", md:"Mode", d:"Dictionary URL", s:"Study", ms:"Master", t:"Test", sl:"Slow 0.8x" },
+        ja: { n:"日本語", l:"言語", m:"教材", md:"モード", d:"辞書URL", s:"学習", ms:"マスター", t:"テスト", sl:"スロー 0.8x" },
+        pt: { n:"Português", l:"Idioma", m:"Materiais", md:"Modus", d:"Dicionário URL", s:"Estudo", ms:"Mestre", t:"Teste", sl:"Lento 0.8x" },
+        zh: { n:"中文", l:"语言", m:"材料", md:"模式", d:"词典URL", s:"学习", ms:"大师", t:"测试", sl:"慢速 0.8x" },
+        fa: { n:"فارسی", l:"زبان", m:"مواد", md:"حالت", d:"لینک دیکشنری", s:"مطالعه", ms:"استاد", t:"تست", sl:"آهسته ۰.۸x" },
+        hi: { n:"हिन्दी", l:"भाषा", m:"सामग्री", md:"мод", d:"शब्दкош URL", s:"अध्ययन", ms:"Мастер", t:"परीक्षा", sl:"धीма 0.8x" },
+        ar: { n:"العربية", l:"اللغة", m:"المواد", md:"الوضع", d:"قاموس URL", s:"دراسة", ms:"ماстер", t:"اختبار", sl:"بطيء 0.8x" },
+        fr: { n:"Français", l:"Langue", m:"Matériels", md:"Mode", d:"URL Dictionnaire", s:"Étude", ms:"Maître", t:"Test", sl:"Lent 0.8x" },
+        es: { n:"Español", l:"Idioma", m:"Materiales", md:"Modo", d:"URL Diccionario", s:"Estudio", ms:"Maestro", t:"Prueba", sl:"Lento 0.8x" },
+        it: { n:"Italiano", l:"Lingua", m:"Materiali", md:"Modo", d:"URL Dizionario", s:"Studio", ms:"Master", t:"Test", sl:"Lento 0.8x" }
+    };
+
+    function upUI() {
+        const t = langs[document.getElementById('langSel').value];
+        document.getElementById('l-lang').innerText = t.l; document.getElementById('l-mat').innerText = t.m;
+        document.getElementById('l-mode').innerText = t.md; document.getElementById('l-dict').innerText = t.d;
+        document.getElementById('l-slow').innerText = t.sl;
+        const m = document.getElementById('modeSel'); m.innerHTML = '';
+        m.add(new Option(t.s, 'study')); m.add(new Option(t.ms, 'master')); m.add(new Option(t.t, 'test'));
+        gen();
     }
 
-    function copyCode() {
-        codeArea.select();
-        document.execCommand('copy');
-        alert('Код скопирован! Теперь вставьте его в Genially.');
+    function toggleD(t) { 
+        if(document.body.classList.contains(t+'-open')) document.body.classList.remove(t+'-open');
+        else { document.body.classList.remove('dict-open','mat-open'); document.body.classList.add(t+'-open'); }
     }
 
-    // Инициализация редактора
-    function updateEditor() {
-        generateCode();
+    function loadD() { document.getElementById('f-dict').src = document.getElementById('u-dict').value; toggleD('dict'); }
+    function loadM() { document.getElementById('f-mat').src = document.getElementById('u-mat').value; toggleD('mat'); }
+
+    function gen() {
+        const aud = document.getElementById('u-mat').value; // для примера берем из матов
+        const dict = document.getElementById('u-dict').value;
+        const mode = document.getElementById('modeSel').value;
+        const lang = document.getElementById('langSel').value;
+        
+        // В коде iframe зашита ваша логика режимов
+        const code = `<iframe src="https://studio.pro/player?mode=${mode}&lang=${lang}&aud=${encodeURIComponent(aud)}&dict=${encodeURIComponent(dict)}" width="100%" height="600" frameborder="0"></iframe>`;
+        document.getElementById('res-code').value = code;
     }
 
-    window.onload = generateCode;
+    function copyC() { document.getElementById('res-code').select(); document.execCommand('copy'); alert("Copied!"); }
+
+    const sel = document.getElementById('langSel');
+    Object.keys(langs).forEach(k => sel.add(new Option(langs[k].n, k)));
+    sel.value = 'ru'; upUI();
 </script>
-
 </body>
 </html>
