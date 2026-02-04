@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>AUDIO STUDIO PRO | FULL RESTORE</title>
+    <title>AUDIO STUDIO PRO | FIXED LAYOUT</title>
     <style>
         :root { 
             --gold-line: #d4af37;
@@ -13,52 +13,76 @@
         }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--sidebar-bg); display: flex; height: 100vh; overflow: hidden; color: var(--text-main); }
 
-        /* СЛОИ ШТОРОК */
-        .drawer { position: fixed; right: -515px; top: 0; width: 500px; height: 100%; background: white; transition: right 0.4s ease; box-shadow: -10px 0 25px rgba(0,0,0,0.1); z-index: 100; }
+        /* ШТОРКИ - ИСПРАВЛЕННАЯ ШИРИНА */
+        .drawer { position: fixed; right: -515px; top: 0; width: 500px; height: 100%; background: white; transition: right 0.4s ease; box-shadow: -10px 0 25px rgba(0,0,0,0.1); z-index: 100; overflow: hidden; }
         .drawer-mat { z-index: 110; border-left: 4px solid #5da9e1; }
         .drawer-dict { border-left: 3px solid var(--gold-line); }
         body.dict-open .drawer-dict { right: 0; }
         body.mat-open .drawer-mat { right: 0; }
+        
+        /* Фреймы внутри шторок */
+        .drawer iframe { width: 100%; height: 100%; border: none; display: block; }
 
         .drawer-triggers { position: fixed; right: 0; top: 40%; display: flex; flex-direction: column; gap: 10px; z-index: 120; }
-        .t-btn { width: 45px; height: 60px; border: none; border-radius: 12px 0 0 12px; cursor: pointer; color: white; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; }
+        .t-btn { width: 45px; height: 60px; border: none; border-radius: 12px 0 0 12px; cursor: pointer; color: white; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; box-shadow: -2px 2px 5px rgba(0,0,0,0.1); }
 
         /* ПАНЕЛИ */
-        .sidebar-left { width: 310px; border-right: 1px solid #ddd; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: white; overflow-y: auto; }
+        .sidebar-left { width: 310px; border-right: 1px solid #ddd; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: white; overflow-y: auto; flex-shrink: 0; }
         .player-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 30% 20%, #ffffff 0%, #f4faff 45%, #eef8ff 100%); transition: margin-right 0.4s; }
         body.dict-open .player-zone { margin-right: 500px; }
-        body.mat-open .player-zone { margin-right: 530px; }
+        body.mat-open .player-zone { margin-right: 500px; }
 
         .card { border: 2px solid var(--gold-line); border-radius: 15px; padding: 10px; background: white; margin-bottom: 5px; }
         label { font-size: 0.7rem; font-weight: 900; color: var(--accent-gold); display: block; margin-bottom: 4px; text-transform: uppercase; }
-        .input-row { display: flex; align-items: center; gap: 5px; background: #f9f9f9; padding: 5px 10px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 5px; position: relative; min-height: 30px; }
-        input, select { border: none; background: transparent; width: 100%; outline: none; font-size: 0.85rem; font-weight: bold; }
+        .input-row { display: flex; align-items: center; gap: 5px; background: #f9f9f9; padding: 5px 10px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 5px; position: relative; height: 32px; }
+        input, select { border: none; background: transparent; width: 100%; outline: none; font-size: 0.85rem; font-weight: bold; color: var(--text-main); }
 
-        .x-btn { color: #ff8e8e; border: none; background: none; cursor: pointer; font-weight: bold; }
-        .cover { width: 400px; height: 225px; border-radius: 20px; border: 3px solid var(--gold-line); background: white; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; font-size: 4rem; background-size: cover; }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 85%; margin-top: 20px; }
-        .file-text { font-size: 0.8rem; color: #78a1c4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .x-btn { color: #ff8e8e; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 1rem; padding: 0 5px; }
+        .link-icon { color: var(--gold-line); font-size: 0.9rem; }
+
+        /* ЦЕНТРАЛЬНЫЕ ЭЛЕМЕНТЫ */
+        .cover { width: 400px; height: 225px; border-radius: 20px; border: 3px solid var(--gold-line); background: white; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; font-size: 4rem; background-size: cover; background-position: center; }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 85%; max-width: 800px; margin-top: 20px; }
+        .file-text { font-size: 0.8rem; color: #78a1c4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
     </style>
 </head>
 <body class="dict-open">
 
 <div class="drawer-triggers">
-    <button class="t-btn" style="background:var(--gold-grad)" onclick="document.body.classList.toggle('dict-open')">📖</button>
-    <button class="t-btn" style="background:#5da9e1" onclick="document.body.classList.toggle('mat-open')">📂</button>
+    <button class="t-btn" style="background:var(--gold-grad)" onclick="toggleDrawer('dict')">📖</button>
+    <button class="t-btn" style="background:#5da9e1" onclick="toggleDrawer('mat')">📂</button>
 </div>
 
 <div class="sidebar-left">
-    <div style="text-align:center"><img src="https://irinschensmagen-alt.github.io/Audioplayer-Studio-Pro/logo.png" style="width:60px"></div>
+    <div style="text-align:center"><img src="https://irinschensmagen-alt.github.io/Audioplayer-Studio-Pro/logo.png" style="width:60px; margin-bottom: 10px;"></div>
+    
     <div class="card"><label id="l-lang">Language</label><select id="langSelect" onchange="updateUI()"></select></div>
     
     <div class="card">
         <label id="l-mat">Materials</label>
-        <div class="input-row"><input type="text" id="u-mat" placeholder="Link" onkeypress="if(event.key==='Enter') setMat(this.value)"> 🔗 <button class="x-btn" onclick="clearMat()">✖</button></div>
-        <div class="input-row"><input type="file" id="f-mat" style="position:absolute; opacity:0; width:100%; cursor:pointer" onchange="handleFile(this,'mat')"><span id="f-mat-n" class="file-text">📁 File</span><button class="x-btn" onclick="clearMat()">✖</button></div>
+        <div class="input-row">
+            <input type="text" id="u-mat" placeholder="Link" onkeypress="if(event.key==='Enter') setMat(this.value)">
+            <span class="link-icon">🔗</span>
+            <button class="x-btn" onclick="clearMat()">✖</button>
+        </div>
+        <div class="input-row">
+            <input type="file" id="f-mat" style="position:absolute; opacity:0; width:100%; cursor:pointer" onchange="handleFile(this,'mat')">
+            <span id="f-mat-n" class="file-text">📁 File</span>
+            <button class="x-btn" onclick="clearMat()">✖</button>
+        </div>
     </div>
 
     <div class="card"><label id="l-mode">Mode</label><select id="modeSelect"><option value="study" id="opt-study"></option><option value="master" id="opt-master"></option><option value="test" id="opt-test"></option></select></div>
-    <div class="card"><label id="l-dict">Dictionary URL</label><div class="input-row"><input type="text" id="u-dict" oninput="setDict(this.value)"><button class="x-btn" onclick="resetDict()">✖</button></div></div>
+    
+    <button id="slowBtn" style="background:#5da9e1; color:white; border:none; padding:10px; border-radius:12px; font-weight:900; margin-bottom:10px; cursor:pointer;">🐢 <span id="l-slow">SLOW 0.8X</span></button>
+
+    <div class="card">
+        <label id="l-dict">Dictionary URL</label>
+        <div class="input-row">
+            <input type="text" id="u-dict" oninput="setDict(this.value)">
+            <button class="x-btn" onclick="resetDict()">✖</button>
+        </div>
+    </div>
 </div>
 
 <div class="drawer drawer-dict"><iframe id="dict-frame"></iframe></div>
@@ -66,13 +90,17 @@
 
 <div class="player-zone">
     <div class="cover" id="cover">♫</div>
-    <input type="range" id="prog" style="width:400px; accent-color:var(--gold-line); margin-bottom:20px;">
-    <div style="display:flex; gap:40px;"><button style="background:none; border:none; font-size:3rem;">⏪</button><button style="width:80px; height:80px; border-radius:50%; background:var(--gold-grad); border:none; color:white; font-size:2rem;">▶</button><button style="background:none; border:none; font-size:3rem;">⏩</button></div>
+    <input type="range" id="prog" style="width:400px; accent-color:var(--gold-line); margin-bottom:15px;">
+    <div style="display:flex; gap:40px; margin-bottom: 10px;">
+        <button style="background:none; border:none; font-size:3rem; cursor:pointer; color:var(--text-main)">⏪</button>
+        <button style="width:80px; height:80px; border-radius:50%; background:var(--gold-grad); border:none; color:white; font-size:2rem; cursor:pointer;">▶</button>
+        <button style="background:none; border:none; font-size:3rem; cursor:pointer; color:var(--text-main)">⏩</button>
+    </div>
 
     <div class="grid-inputs">
         <div class="card">
             <label id="l-aud">Audio</label>
-            <div class="input-row"><input type="text" placeholder="Link"> 🔗 <button class="x-btn">✖</button></div>
+            <div class="input-row"><input type="text" placeholder="Link"> <span class="link-icon">🔗</span> <button class="x-btn">✖</button></div>
             <div class="input-row">
                 <input type="file" accept="audio/*" style="position:absolute; opacity:0; width:100%; cursor:pointer" onchange="updateFileName(this, 'f-aud-n')">
                 <span id="f-aud-n" class="file-text">📁 File</span>
@@ -81,7 +109,7 @@
         </div>
         <div class="card">
             <label id="l-img">Image</label>
-            <div class="input-row"><input type="text" placeholder="Link"> 🔗 <button class="x-btn">✖</button></div>
+            <div class="input-row"><input type="text" placeholder="Link"> <span class="link-icon">🔗</span> <button class="x-btn">✖</button></div>
             <div class="input-row">
                 <input type="file" accept="image/*" style="position:absolute; opacity:0; width:100%; cursor:pointer" onchange="updateFileName(this, 'f-img-n')">
                 <span id="f-img-n" class="file-text">📁 File</span>
@@ -94,13 +122,11 @@
 <script>
     const DEFAULT_DICT = "https://www.wiktionary.org/";
     const langs = {
-        ru: { lang:"Язык", mat:"Материалы", mode:"Режим", dict:"Словарь URL", study:"Ученик", master:"Мастер", test:"Тест", aud:"Аудио", img:"Картинка", sel:"Выбрать файл" },
-        en: { lang:"Language", mat:"Materials", mode:"Mode", dict:"Dictionary URL", study:"Study", master:"Master", test:"Test", aud:"Audio", img:"Image", sel:"Choose File" },
-        ja: { lang:"言語", mat:"教材", mode:"モード", dict:"辞書URL", study:"学習", master:"マスター", test:"テスト", aud:"音声", img:"画像", sel:"ファイルを選択" },
-        zh: { lang:"语言", mat:"材料", mode:"模式", dict:"词典URL", study:"学习", master:"大师", test:"测试", aud:"音频", img:"图片", sel:"选择文件" },
-        ar: { lang:"اللغة", mat:"المواد", mode:"الوضع", dict:"قاموس URL", study:"دراسة", master:"ماستر", test:"اختبار", aud:"صوت", img:"صورة", sel:"اختيار ملف" },
-        hi: { lang:"भाषा", mat:"सामग्री", mode:"मोड", dict:"शब्दकोш URL", study:"अध्ययन", master:"मास्टर", test:"परीक्षा", aud:"ऑडियो", img:"चित्र", sel:"फ़ाइल चुनें" },
-        fa: { lang:"زبان", mat:"مواد", mode:"حالت", dict:"لینک دیکشنری", study:"مطالعه", master:"استاد", test:"تست", aud:"صوتی", img:"تصویر", sel:"انتخاب فایل" }
+        ru: { lang:"Язык", mat:"Материалы", mode:"Режим", dict:"Словарь URL", study:"Ученик", master:"Мастер", test:"Тест", aud:"Аудио", img:"Картинка", sel:"Выбрать файл", slow:"Замедление 0.8x" },
+        de: { lang:"Sprache", mat:"Materialien", mode:"Modus", dict:"Wörterbuch URL", study:"Lerner", master:"Meister", test:"Test", aud:"Audio", img:"Bild", sel:"Datei wählen", slow:"Tempo 0.8x" },
+        en: { lang:"Language", mat:"Materials", mode:"Mode", dict:"Dictionary URL", study:"Study", master:"Master", test:"Test", aud:"Audio", img:"Image", sel:"Choose File", slow:"Slow 0.8x" },
+        ja: { lang:"言語", mat:"教材", mode:"モード", dict:"辞書URL", study:"学習", master:"マスター", test:"テスト", aud:"音声", img:"画像", sel:"ファイルを選択", slow:"スロー 0.8x" },
+        pt: { lang:"Idioma", mat:"Materiais", mode:"Modo", dict:"Dicionário URL", study:"Estudo", master:"Mestre", test:"Teste", aud:"Áudio", img:"Imagem", sel:"Escolher arquivo", slow:"Lento 0.8x" }
     };
 
     function updateUI() {
@@ -111,18 +137,41 @@
         document.getElementById('l-dict').innerText = t.dict;
         document.getElementById('l-aud').innerText = t.aud;
         document.getElementById('l-img').innerText = t.img;
+        document.getElementById('l-slow').innerText = t.slow;
         document.getElementById('opt-study').innerText = t.study;
         document.getElementById('opt-master').innerText = t.master;
         document.getElementById('opt-test').innerText = t.test;
         ['f-mat-n', 'f-aud-n', 'f-img-n'].forEach(id => { 
-            if(document.getElementById(id).innerText.includes('📁')) document.getElementById(id).innerText = "📁 " + t.sel; 
+            let span = document.getElementById(id);
+            if(span.innerText.includes('📁')) span.innerText = "📁 " + t.sel; 
         });
+    }
+
+    function toggleDrawer(type) {
+        if(type === 'dict') {
+            document.body.classList.toggle('dict-open');
+            document.body.classList.remove('mat-open');
+        } else {
+            document.body.classList.toggle('mat-open');
+            document.body.classList.remove('dict-open');
+        }
     }
 
     function setDict(v) { document.getElementById('dict-frame').src = v || DEFAULT_DICT; }
     function resetDict() { document.getElementById('u-dict').value = DEFAULT_DICT; setDict(DEFAULT_DICT); }
-    function setMat(u) { document.getElementById('mat-frame').src = u; document.body.classList.add('mat-open'); }
-    function clearMat() { document.getElementById('u-mat').value=''; document.getElementById('mat-frame').src='about:blank'; }
+    function setMat(u) { if(u) { document.getElementById('mat-frame').src = u; document.body.classList.add('mat-open'); document.body.classList.remove('dict-open'); } }
+    function clearMat() { document.getElementById('u-mat').value=''; document.getElementById('f-mat').value=''; document.getElementById('mat-frame').src='about:blank'; updateUI(); }
+    
+    function handleFile(input, type) {
+        if(input.files[0]) {
+            const url = URL.createObjectURL(input.files[0]);
+            document.getElementById('mat-frame').src = url;
+            document.getElementById('f-mat-n').innerText = input.files[0].name;
+            document.body.classList.add('mat-open');
+            document.body.classList.remove('dict-open');
+        }
+    }
+
     function updateFileName(input, spanId) { if(input.files[0]) document.getElementById(spanId).innerText = input.files[0].name; }
     function clearInp(spanId) { document.getElementById(spanId).innerText = "📁 " + (langs[document.getElementById('langSelect').value]?.sel || "File"); }
 
