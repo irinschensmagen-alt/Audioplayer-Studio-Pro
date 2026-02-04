@@ -2,52 +2,50 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>AUDIO STUDIO PRO | FINAL GENIALLY EDITION</title>
+    <title>AUDIO STUDIO PRO | EDITOR</title>
     <style>
         :root { 
             --gold: #d4af37; --gold-l: #fdfaf0; --blue: #0078d4; 
             --dark: #1a4a7a; --bg: #fcfdfe; --red: #e11d48; 
         }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; color: var(--dark); font-size: 15px; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; color: var(--dark); font-size: 14px; }
 
         /* САЙДБАР */
-        .sidebar { width: 340px; border-right: 1px solid #e2e8f0; background: white; display: flex; flex-direction: column; padding: 20px; flex-shrink: 0; z-index: 1000; }
-        .card { border: 2px solid var(--gold-l); border-radius: 12px; padding: 12px; margin-bottom: 10px; background: white; position: relative; }
-        label { font-size: 11px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; display: block; }
+        .sidebar { width: 320px; border-right: 1px solid #e2e8f0; background: white; display: flex; flex-direction: column; padding: 15px; flex-shrink: 0; z-index: 1000; box-shadow: 2px 0 10px rgba(0,0,0,0.02); }
+        .card { border: 2px solid var(--gold-l); border-radius: 12px; padding: 10px; margin-bottom: 8px; background: white; }
+        label { font-size: 10px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 4px; display: block; }
         
-        .inp-group { background: #f8fafc; border-radius: 8px; padding: 5px 10px; display: flex; align-items: center; gap: 5px; border: 1.5px solid #f1f5f9; }
-        input, select { border: none; background: transparent; width: 100%; outline: none; font-size: 14px; font-weight: 600; color: var(--dark); }
+        .inp-group { background: #f8fafc; border-radius: 8px; padding: 4px 10px; display: flex; align-items: center; gap: 5px; border: 1.5px solid #f1f5f9; }
+        input, select { border: none; background: transparent; width: 100%; outline: none; font-size: 13px; font-weight: 600; color: var(--dark); height: 25px; }
         
-        .btn-in { background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 14px; }
+        .btn-in { background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 14px; padding: 2px; }
         .btn-clear:hover { color: var(--red); }
 
         /* ФАЙЛЫ И КРЕСТИКИ */
-        .file-box { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
+        .file-box { display: flex; align-items: center; gap: 5px; margin-top: 4px; }
         .file-link { font-size: 11px; color: var(--blue); cursor: pointer; font-weight: 700; text-decoration: none; }
         .x-min { color: var(--red); cursor: pointer; font-weight: bold; font-size: 11px; padding: 0 4px; }
 
-        /* БЕЛОЕ ОКНО ВЫВОДА КОДА */
+        /* БЕЛОЕ ОКНО ВЫВОДА (ДЛЯ КОПИРОВАНИЯ) */
         .export-box { margin-top: auto; padding-top: 10px; }
         .code-res { 
-            width: 100%; height: 95px; font-family: 'Consolas', monospace; font-size: 11px; 
+            width: 100%; height: 90px; font-family: 'Consolas', monospace; font-size: 10px; 
             background: #ffffff !important; color: #1a1a1a !important; 
-            border: 2px solid var(--gold) !important; border-radius: 10px; padding: 10px; 
-            resize: none; box-sizing: border-box; display: block;
+            border: 2px solid var(--gold) !important; border-radius: 10px; padding: 8px; 
+            resize: none; box-sizing: border-box; display: block; overflow-y: auto;
         }
-        .copy-btn { width: 100%; background: var(--gold); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 800; margin-top: 8px; font-size: 14px; }
+        .copy-btn { width: 100%; background: var(--gold); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 800; margin-top: 6px; font-size: 13px; text-transform: uppercase; }
 
-        /* ШТОРКИ */
-        .drawer { position: fixed; right: -605px; top: 0; width: 600px; height: 100%; background: white; transition: 0.4s ease; z-index: 500; border-left: 8px solid var(--gold); box-shadow: -10px 0 30px rgba(0,0,0,0.05); }
+        /* ПРЕДПРОСМОТР */
+        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; position: relative; }
+        .preview-cover { width: 340px; height: 190px; border: 3px solid var(--gold); border-radius: 20px; background: white; display: flex; align-items: center; justify-content: center; font-size: 3rem; background-size: cover; background-position: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+        /* ШТОРКИ И ВКЛАДКИ */
+        .side-tabs { position: fixed; right: 0; top: 35%; display: flex; flex-direction: column; gap: 8px; z-index: 1100; }
+        .tab { width: 40px; height: 50px; border: none; border-radius: 10px 0 0 10px; color: white; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; box-shadow: -2px 0 5px rgba(0,0,0,0.1); }
+        .drawer { position: fixed; right: -605px; top: 0; width: 600px; height: 100%; background: white; transition: 0.4s ease; z-index: 500; border-left: 6px solid var(--gold); box-shadow: -10px 0 30px rgba(0,0,0,0.08); }
         body.dict-open .drawer { right: 0; }
         body.mat-open .drawer { right: 0; border-left-color: var(--blue); }
-
-        .side-tabs { position: fixed; right: 0; top: 35%; display: flex; flex-direction: column; gap: 10px; z-index: 1100; }
-        .tab { width: 45px; height: 55px; border: none; border-radius: 12px 0 0 12px; color: white; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; }
-
-        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; transition: 0.4s; }
-        body.dict-open .main-content, body.mat-open .main-content { margin-right: 600px; }
-        
-        .preview-cover { width: 380px; height: 210px; border: 3px solid var(--gold); border-radius: 20px; background: white; display: flex; align-items: center; justify-content: center; font-size: 3rem; background-size: cover; background-position: center; }
         iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
@@ -61,7 +59,7 @@
 <div class="drawer" id="drawer-win"><iframe id="dr-iframe" src="about:blank"></iframe></div>
 
 <aside class="sidebar">
-    <div style="text-align:center; margin-bottom:10px;"><img src="https://irinschensmagen-alt.github.io/Audioplayer-Studio-Pro/logo.png" width="50"></div>
+    <div style="text-align:center; margin-bottom:10px;"><img src="https://irinschensmagen-alt.github.io/Audioplayer-Studio-Pro/logo.png" width="45"></div>
     
     <div class="card"><label id="l-lang">Sprache</label><select id="langSel" onchange="updateUI()"></select></div>
     
@@ -72,15 +70,12 @@
             <button class="btn-in btn-clear" onclick="clr('u-mat')">✕</button>
             <button class="btn-in" onclick="loadSide('mat')">📎</button>
         </div>
-        <div class="file-box">
-            <span class="file-link">📁 <span id="f-mat-txt">Datei wählen</span></span>
-            <span class="x-min" onclick="clrTxt('f-mat-txt')">✕</span>
-        </div>
+        <div class="file-box"><span class="file-link">📁 <span id="f-mat-txt">Datei wählen</span></span><span class="x-min" onclick="clrTxt('f-mat-txt')">✕</span></div>
     </div>
 
     <div class="card"><label id="l-mode">Modus</label><select id="modeSel" onchange="gen()"></select></div>
     
-    <button id="l-slow-btn" style="width:100%; background:var(--blue); color:white; border:none; padding:12px; border-radius:12px; font-weight:800; margin-bottom:10px; cursor:pointer; font-size:13px;">🐢 Tempo 0.8x</button>
+    <button id="l-slow-btn" style="width:100%; background:var(--blue); color:white; border:none; padding:10px; border-radius:10px; font-weight:800; margin-bottom:8px; cursor:pointer; font-size:12px;">🐢 TEMPO 0.8x</button>
 
     <div class="card">
         <label id="l-dict">Wörterbuch</label>
@@ -92,22 +87,22 @@
     </div>
 
     <div class="export-box">
-        <label style="color:var(--gold); font-size: 10px;">IFRAME CODE FOR GENIALLY</label>
-        <textarea id="res-code" class="code-res" readonly placeholder="Enter Audio link to generate code..."></textarea>
+        <label style="color:var(--gold); font-size: 9px;">Iframe code for Genially</label>
+        <textarea id="res-code" class="code-res" readonly></textarea>
         <button class="copy-btn" onclick="copyC()">Copy Code</button>
     </div>
 </aside>
 
 <main class="main-content">
     <div class="preview-cover" id="cover">♫</div>
-    <div style="display: flex; gap: 15px; margin-top: 30px; width: 100%; max-width: 800px;">
+    <div style="display: flex; gap: 10px; margin-top: 20px; width: 100%; max-width: 700px;">
         <div class="card" style="flex:1">
-            <label id="l-aud">AUDIO</label>
+            <label id="l-aud">Audio Link</label>
             <div class="inp-group"><input type="text" id="u-aud" placeholder="https://..." oninput="gen()"><button class="btn-in btn-clear" onclick="clr('u-aud')">✕</button></div>
             <div class="file-box"><span class="file-link">📁 <span id="f-aud-txt">Datei wählen</span></span><span class="x-min" onclick="clrTxt('f-aud-txt')">✕</span></div>
         </div>
         <div class="card" style="flex:1">
-            <label id="l-img">BILD</label>
+            <label id="l-img">Image Link</label>
             <div class="inp-group"><input type="text" id="u-img" placeholder="https://..." oninput="gen()"><button class="btn-in btn-clear" onclick="clr('u-img')">✕</button></div>
             <div class="file-box"><span class="file-link">📁 <span id="f-img-txt">Datei wählen</span></span><span class="x-min" onclick="clrTxt('f-img-txt')">✕</span></div>
         </div>
@@ -121,12 +116,12 @@
         ja: { n:"日本語", l:"言語", a:"音声", i:"画像", m:"教材", md:"モード", d:"辞書", s:"学習", ms:"マスター", t:"テスト", f:"ファイルを選択" },
         zh: { n:"中文", l:"语言", a:"音频", i:"图片", m:"材料", md:"模式", d:"词典", s:"学习", ms:"大师", t:"测试", f:"选择文件" },
         fa: { n:"فارسی", l:"زبان", a:"صوتی", i:"تصویر", m:"مواد", md:"حالت", d:"دیکشنری", s:"مطالعه", ms:"استاد", t:"تست", f:"انتخاب فایل" },
-        hi: { n:"हिन्दी", l:"भाषा", a:"ऑडियो", i:"चित्र", m:"सामग्री", md:"मोड", d:"शब्दकोश", s:"अध्ययन", ms:"मास्टर", t:"परीक्षा", f:"फ़айл चुनें" },
         pt: { n:"Português", l:"Idioma", a:"Áudio", i:"Imagem", m:"Materiais", md:"Modo", d:"Dicionário", s:"Estudo", ms:"Mestre", t:"Teste", f:"Escolher arquivo" },
         ar: { n:"العربية", l:"اللغة", a:"صوت", i:"صورة", m:"المواد", md:"الوضع", d:"قاموس", s:"دراسة", ms:"Мастер", t:"اختبار", f:"اختيار ملف" },
         it: { n:"Italiano", l:"Lingua", a:"Audio", i:"Immagine", m:"Materiali", md:"Modo", d:"Dizionario", s:"Studio", ms:"Master", t:"Test", f:"Scegli file" },
         fr: { n:"Français", l:"Langue", a:"Audio", i:"Image", m:"Matériels", md:"Mode", d:"Dictionnaire", s:"Étude", ms:"Maître", t:"Test", f:"Choisir un fichier" },
-        es: { n:"Español", l:"Idioma", a:"Audio", i:"Image", m:"Materiales", md:"Modo", d:"Diccionario", s:"Estudio", ms:"Maestro", t:"Prueba", f:"Elegir archivo" }
+        es: { n:"Español", l:"Idioma", a:"Audio", i:"Image", m:"Materiales", md:"Modo", d:"Diccionario", s:"Estudio", ms:"Maestro", t:"Prueba", f:"Elegir archivo" },
+        hi: { n:"हिन्दी", l:"भाषा", a:"ऑडियो", i:"चित्र", m:"सामग्री", md:"मोд", d:"शब्दकोश", s:"अध्ययन", ms:"मास्टर", t:"परीक्षा", f:"फ़айл चुनें" }
     };
 
     function updateUI() {
@@ -136,8 +131,11 @@
         document.getElementById('l-img').innerText = t.i; document.getElementById('l-mat').innerText = t.m;
         document.getElementById('l-mode').innerText = t.md; document.getElementById('l-dict').innerText = t.d;
         document.getElementById('f-mat-txt').innerText = t.f; document.getElementById('f-aud-txt').innerText = t.f; document.getElementById('f-img-txt').innerText = t.f;
-        const m = document.getElementById('modeSel'); m.innerHTML = '';
+        const m = document.getElementById('modeSel'); 
+        const currentMode = m.value || 'study';
+        m.innerHTML = '';
         m.add(new Option(t.s, 'study')); m.add(new Option(t.ms, 'master')); m.add(new Option(t.t, 'test'));
+        m.value = currentMode;
         gen();
     }
 
@@ -155,12 +153,10 @@
         if(img) document.getElementById('cover').style.backgroundImage = `url(${img})`;
         else document.getElementById('cover').style.backgroundImage = 'none';
 
-        if(!aud) { document.getElementById('res-code').value = ""; return; }
-
+        // Формируем код ВСЕГДА, даже если ссылки пустые (чтобы пользователь видел структуру)
         const p = new URLSearchParams({ aud, img, mode, lang, dict, mat }).toString();
-        // ГЕНЕРАЦИЯ СТРОГО В ОДНУ СТРОКУ ДЛЯ GENIALLY
-        const code = '<iframe src="https://studio-player.pro/?' + p + '" width="100%" height="750" frameborder="0" allow="autoplay; fullscreen" allowfullscreen="true" style="border:0; width:1px; min-width:100%;"></iframe>';
-        document.getElementById('res-code').value = code;
+        const iframeStr = '<iframe src="https://studio-player.pro/?' + p + '" width="100%" height="750" frameborder="0" allow="autoplay; fullscreen" allowfullscreen="true" style="border:0; width:1px; min-width:100%;"></iframe>';
+        document.getElementById('res-code').value = iframeStr;
     }
 
     function toggleD(type) {
@@ -175,11 +171,20 @@
     }
 
     function loadSide(type) { toggleD(type); }
-    function copyC() { const a = document.getElementById('res-code'); a.select(); document.execCommand('copy'); }
+    function copyC() { 
+        const a = document.getElementById('res-code'); 
+        a.select(); 
+        document.execCommand('copy'); 
+        const btn = document.querySelector('.copy-btn');
+        const oldTxt = btn.innerText;
+        btn.innerText = "COPIED!";
+        setTimeout(() => btn.innerText = oldTxt, 2000);
+    }
 
     const sel = document.getElementById('langSel');
     Object.keys(dictionary).forEach(k => sel.add(new Option(dictionary[k].n, k)));
-    sel.value = 'de'; updateUI();
+    sel.value = 'de'; 
+    updateUI();
 </script>
 </body>
 </html>
