@@ -1,155 +1,213 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>AUDIO STUDIO PRO | EDITOR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUDIO STUDIO PRO | LARGE & BOLD</title>
     <style>
-        :root { --gold: #d4af37; --gold-l: #fdfaf0; --blue: #0078d4; --dark: #1a4a7a; --bg: #fcfdfe; --red: #e11d48; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; font-size: 14px; }
-
-        /* САЙДБАР */
-        .sidebar { width: 320px; border-right: 1px solid #e2e8f0; background: white; display: flex; flex-direction: column; padding: 15px; flex-shrink: 0; z-index: 1000; }
-        .card { border: 2px solid var(--gold-l); border-radius: 12px; padding: 10px; margin-bottom: 8px; background: white; }
-        label { font-size: 10px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 4px; display: block; }
-        
-        .inp-group { background: #f8fafc; border-radius: 8px; padding: 4px 10px; display: flex; align-items: center; gap: 5px; border: 1.5px solid #f1f5f9; }
-        input, select { border: none; background: transparent; width: 100%; outline: none; font-size: 13px; font-weight: 600; color: var(--dark); height: 25px; }
-        .btn-in { background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 14px; }
-
-        /* ФАЙЛЫ И КРЕСТИКИ */
-        .file-box { display: flex; align-items: center; gap: 5px; margin-top: 4px; }
-        .file-link { font-size: 11px; color: var(--blue); cursor: pointer; font-weight: 700; }
-        .x-min { color: var(--red); cursor: pointer; font-weight: bold; font-size: 11px; padding: 0 4px; }
-
-        /* БЕЛОЕ ОКНО ВЫВОДА (НИЗ СЛЕВА) */
-        .export-box { margin-top: auto; padding-top: 10px; }
-        .code-res { 
-            width: 100%; height: 90px; font-family: 'Consolas', monospace; font-size: 10px; 
-            background: #ffffff !important; color: #1a1a1a !important; 
-            border: 2px solid var(--gold) !important; border-radius: 10px; padding: 8px; 
-            resize: none; box-sizing: border-box; display: block;
+        :root { 
+            --gold-line: #d4af37;
+            --gold-grad: linear-gradient(135deg, #e5c064 0%, #f9e1a9 50%, #d4af37 100%);
+            --chameleon-ultra-soft: radial-gradient(circle at 30% 20%, #ffffff 0%, #f0f9ff 40%, #e6f4ff 100%);
+            --sidebar-bg: #fcfdfe;
+            --accent-blue: #2c5d8f; /* Сделал темнее для лучшей четкости */
         }
-        .copy-btn { width: 100%; background: var(--gold); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 800; margin-top: 6px; font-size: 13px; }
+        
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--sidebar-bg); display: flex; height: 100vh; overflow: hidden; }
 
-        /* ПРЕДПРОСМОТР */
-        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .preview-cover { width: 340px; height: 190px; border: 3px solid var(--gold); border-radius: 20px; background: white; display: flex; align-items: center; justify-content: center; font-size: 3rem; background-size: cover; background-position: center; }
+        /* SIDEBAR - Увеличен для крупного шрифта */
+        .sidebar { width: 450px; background: var(--sidebar-bg); padding: 30px; border-right: 2px solid rgba(212, 175, 55, 0.4); flex-shrink: 0; overflow-y: auto; }
+        .logo-box { text-align: center; margin-bottom: 35px; }
+        .logo-img { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--gold-line); }
+        .app-title { color: #b8860b; font-weight: 900; font-size: 2rem; margin-top: 15px; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* ШТОРКИ */
-        .side-tabs { position: fixed; right: 0; top: 35%; display: flex; flex-direction: column; gap: 8px; z-index: 1100; }
-        .tab { width: 40px; height: 50px; border: none; border-radius: 10px 0 0 10px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .drawer { position: fixed; right: -605px; top: 0; width: 600px; height: 100%; background: white; transition: 0.4s; z-index: 500; border-left: 6px solid var(--gold); }
-        body.dict-open .drawer { right: 0; }
-        body.mat-open .drawer { right: 0; border-left-color: var(--blue); }
+        /* PLAYER AREA */
+        .player-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; background: var(--chameleon-ultra-soft); }
+        
+        .cover { 
+            width: 90%; 
+            max-width: 650px; 
+            aspect-ratio: 16/9; 
+            border-radius: 30px; 
+            background: white; 
+            border: 6px solid var(--gold-line); 
+            box-shadow: 0 15px 50px rgba(184, 219, 255, 0.3); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 10rem; 
+            margin-bottom: 35px; 
+            background-size: cover; 
+            background-position: center; 
+        }
+        .gold-icon { background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .time { font-weight: 900; font-size: 2.5rem; margin: 20px 0; color: var(--accent-blue); font-variant-numeric: tabular-nums; }
+        #prog { width: 90%; max-width: 650px; accent-color: var(--gold-line); cursor: pointer; height: 12px; }
+        
+        .play-btn { width: 120px; height: 120px; border-radius: 50%; background: var(--gold-grad); color: white; border: none; font-size: 3.5rem; cursor: pointer; box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); display: flex; align-items: center; justify-content: center; }
+        .nav-btn { background: none; border: none; color: var(--accent-blue); font-size: 4rem; cursor: pointer; transition: 0.2s; }
+
+        .slow-btn { background: #5a9fd4; color: white; border: none; padding: 25px; border-radius: 15px; font-weight: 900; font-size: 1.5rem; cursor: pointer; width: 100%; margin: 20px 0; text-transform: uppercase; box-shadow: 0 5px 15px rgba(90,159,212,0.3); }
+
+        /* ОКОШКИ С ЗОЛОТЫМИ РАМКАМИ */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 95%; max-width: 1000px; }
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 25px; 
+            border: 3px solid var(--gold-line); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        }
+        
+        label { font-size: 1.3rem; font-weight: 900; color: #b8860b; text-transform: uppercase; margin-bottom: 12px; display: block; letter-spacing: 1px; }
+        .input-row { display: flex; align-items: center; gap: 15px; background: #f9fdff; padding: 10px 20px; border-radius: 12px; margin-top: 10px; height: 60px; border: 2px solid #eef7fc; }
+        
+        input, select { border: none; background: transparent; width: 100%; outline: none; font-size: 1.4rem; font-weight: 800; color: var(--accent-blue); }
+        
+        .file-label { font-size: 1.3rem; font-weight: 700; color: #78a1c4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .x-btn { color: #ff6b6b; border: none; background: none; font-weight: 900; cursor: pointer; font-size: 2rem; }
     </style>
 </head>
 <body>
 
-<div class="side-tabs">
-    <button class="tab" style="background:var(--gold)" onclick="toggleD('dict')">📖</button>
-    <button class="tab" style="background:var(--blue)" onclick="toggleD('mat')">📂</button>
+<div class="sidebar">
+    <div class="logo-box">
+        <img src="https://irinschensmagen-alt.github.io/Audioplayer-Studio-Pro/logo.png" class="logo-img">
+        <div class="app-title">Audio Studio Pro</div>
+    </div>
+
+    <label id="l-lang">LANGUAGE</label>
+    <div class="card"><select id="langSelect" onchange="translateUI()"></select></div>
+
+    <label id="l-mode">MODE</label>
+    <div class="card">
+        <select id="modeSelect">
+            <option value="study" id="opt-study"></option>
+            <option value="master" id="opt-master"></option>
+            <option value="test" id="opt-test"></option>
+        </select>
+    </div>
+
+    <button id="slowBtn" class="slow-btn" onclick="toggleSlow()">🐢 <span id="l-slow"></span></button>
+
+    <div class="card">
+        <label id="l-materials">MATERIALS</label>
+        <div class="input-row">
+            <div style="position:relative; width:100%; height:100%; display:flex; align-items:center;">
+                <input type="file" id="f-univ" onchange="updateFileName(this)" style="position:absolute; opacity:0; width:100%; cursor:pointer;">
+                <span class="file-label" id="f-univ-btn"></span>
+            </div>
+            <button class="x-btn" onclick="clearF('f-univ')">✖</button>
+        </div>
+        <div class="input-row">
+            <input type="text" id="u-dict" placeholder="URL">
+            <button class="x-btn" onclick="clearF('u-dict')">✖</button>
+        </div>
+    </div>
 </div>
 
-<div class="drawer" id="drawer-win"><iframe id="dr-iframe" src="about:blank" frameborder="0"></iframe></div>
-
-<aside class="sidebar">
-    <div style="text-align:center; margin-bottom:10px;"><img src="https://irinschensmagen-alt.github.io/Audioplayer-Studio-Pro/logo.png" width="45"></div>
+<div class="player-zone">
+    <div class="cover" id="cover"><span class="gold-icon">♫</span></div>
+    <input type="range" id="prog" value="0" step="0.1" oninput="manualSeek(this.value)">
+    <div class="time" id="time-display">00:00 / 00:00</div>
     
-    <div class="card"><label id="l-lang">Sprache</label><select id="langSel" onchange="updateUI()"></select></div>
-    
-    <div class="card">
-        <label id="l-mat">Materialien</label>
-        <div class="inp-group">
-            <input type="text" id="u-mat" placeholder="https://..." oninput="gen()">
-            <button class="btn-in" onclick="loadSide('mat')">📎</button>
-        </div>
-        <div class="file-box"><span class="file-link">📁 <span id="f-mat-txt">Datei wählen</span></span><span class="x-min" onclick="clrTxt('f-mat-txt')">✕</span></div>
+    <div style="display:flex; align-items:center; gap:60px; margin-bottom:35px;">
+        <button class="nav-btn" onclick="rewind(-10)">⏪</button>
+        <button class="play-btn" id="play-btn" onclick="togglePlay()">▶</button>
+        <button class="nav-btn" onclick="rewind(10)">⏩</button>
     </div>
 
-    <div class="card"><label id="l-mode">Modus</label><select id="modeSel" onchange="gen()"></select></div>
-    
-    <button style="width:100%; background:var(--blue); color:white; border:none; padding:10px; border-radius:10px; font-weight:800; margin-bottom:8px; cursor:pointer; font-size:12px;">🐢 Tempo 0.8x</button>
-
-    <div class="card">
-        <label id="l-dict">Wörterbuch</label>
-        <div class="inp-group">
-            <input type="text" id="u-dict" value="https://www.wiktionary.org/" oninput="gen()">
-            <button class="btn-in" onclick="loadSide('dict')">📎</button>
+    <div class="grid-container">
+        <div class="card">
+            <label id="l-al">AUDIO</label>
+            <div class="input-row"><input type="text" id="u-aud" oninput="audio.src=this.value"><button class="x-btn" onclick="clearF('u-aud')">✖</button></div>
+            <div class="input-row">
+                <div style="position:relative; width:100%; height:100%; display:flex; align-items:center;">
+                    <input type="file" id="f-aud" accept="audio/*" onchange="updateFileName(this)" style="position:absolute; opacity:0; width:100%; cursor:pointer;">
+                    <span class="file-label" id="f-aud-btn"></span>
+                </div>
+                <button class="x-btn" onclick="clearF('f-aud')">✖</button>
+            </div>
+        </div>
+        <div class="card">
+            <label id="l-il">IMAGE</label>
+            <div class="input-row"><input type="text" id="u-img" oninput="setI(this.value)"><button class="x-btn" onclick="clearF('u-img')">✖</button></div>
+            <div class="input-row">
+                <div style="position:relative; width:100%; height:100%; display:flex; align-items:center;">
+                    <input type="file" id="f-img" accept="image/*" onchange="updateFileName(this)" style="position:absolute; opacity:0; width:100%; cursor:pointer;">
+                    <span class="file-label" id="f-img-btn"></span>
+                </div>
+                <button class="x-btn" onclick="clearF('f-img')">✖</button>
+            </div>
         </div>
     </div>
-
-    <div class="export-box">
-        <label style="color:var(--gold); font-size: 9px;">Iframe for Genially</label>
-        <textarea id="res-code" class="code-res" readonly></textarea>
-        <button class="copy-btn" onclick="copyC()">Copy Code</button>
-    </div>
-</aside>
-
-<main class="main-content">
-    <div class="preview-cover" id="cover">♫</div>
-    <div style="display: flex; gap: 10px; margin-top: 20px; width: 100%; max-width: 700px;">
-        <div class="card" style="flex:1">
-            <label id="l-aud">Audio Link</label>
-            <div class="inp-group"><input type="text" id="u-aud" placeholder="https://..." oninput="gen()"></div>
-            <div class="file-box"><span class="file-link">📁 <span id="f-aud-txt">Datei wählen</span></span><span class="x-min" onclick="clrTxt('f-aud-txt')">✕</span></div>
-        </div>
-        <div class="card" style="flex:1">
-            <label id="l-img">Image Link</label>
-            <div class="inp-group"><input type="text" id="u-img" placeholder="https://..." oninput="gen()"></div>
-            <div class="file-box"><span class="file-link">📁 <span id="f-img-txt">Datei wählen</span></span><span class="x-min" onclick="clrTxt('f-img-txt')">✕</span></div>
-        </div>
-    </div>
-</main>
+</div>
 
 <script>
-    const dictionary = {
-        de: { n:"Deutsch", l:"Sprache", a:"Audio", i:"Bild", m:"Materialien", md:"Modus", d:"Wörterbuch", s:"Lerner", ms:"Meister", t:"Test", f:"Datei wählen" },
-        ru: { n:"Русский", l:"Язык", a:"Аудио", i:"Картинка", m:"Материалы", md:"Режим", d:"Словарь", s:"Ученик", ms:"Мастер", t:"Тест", f:"Выбрать файл" }
+    const audio = new Audio();
+    // Полный список языков по вашему запросу
+    const langs = {
+        de: { name: "Deutsch", lang: "SPRACHE", mode: "MODUS", slow: "LANGSAM 0.8x", materials: "MATERIALIEN", al: "AUDIO", il: "BILD", study: "Lernen", master: "Master", test: "Test", select: "Wählen" },
+        ru: { name: "Русский", lang: "ЯЗЫК", mode: "РЕЖИМ", slow: "ЗАМЕДЛЕНИЕ 0.8x", materials: "МАТЕРИАЛЫ", al: "АУДИО", il: "ФОТО", study: "Ученик", master: "Мастер", test: "Тест", select: "Выбрать" },
+        fr: { name: "Français", lang: "LANGUE", mode: "MODE", slow: "LENT 0.8x", materials: "MATÉRIELS", al: "AUDIO", il: "IMAGE", study: "Étude", master: "Maître", test: "Test", select: "Choisir" },
+        it: { name: "Italiano", lang: "LINGUA", mode: "MODO", slow: "LENTO 0.8x", materials: "MATERIALI", al: "AUDIO", il: "IMMAGINE", study: "Studio", master: "Master", test: "Test", select: "Scegli" },
+        es: { name: "Español", lang: "IDIOMA", mode: "MODO", slow: "LENTO 0.8x", materials: "MATERIALES", al: "AUDIO", il: "IMAGEN", study: "Estudio", master: "Maestro", test: "Prueba", select: "Elegir" },
+        ja: { name: "日本語", lang: "言語", mode: "モード", slow: "スロー 0.8x", materials: "教材", al: "オーディオ", il: "画像", study: "学習", master: "マスター", test: "テスト", select: "選択" },
+        hi: { name: "हिन्दी", lang: "भाषा", mode: "मोड", slow: "धीमी गति 0.8x", materials: "सामग्री", al: "ऑडियो", il: "छवि", study: "अध्ययन", master: "मास्टर", test: "परीक्षा", select: "चुनें" },
+        ar: { name: "العربية", lang: "اللغة", mode: "الوضع", slow: "بطيء 0.8x", materials: "المواد", al: "صوت", il: "صورة", study: "دراسة", master: "ماستر", test: "اختبار", select: "اختر" },
+        fa: { name: "فارسی", lang: "زبان", mode: "حالت", slow: "آهسته 0.8x", materials: "مواد", al: "صوتی", il: "تصویر", study: "مطالعه", master: "استاد", test: "تست", select: "انتخاب" },
+        pt: { name: "Português", lang: "IDIOMA", mode: "MODO", slow: "LENTO 0.8x", materials: "MATERIAIS", al: "ÁUDIO", il: "IMAGEM", study: "Estudo", master: "Mestre", test: "Teste", select: "Escolher" }
     };
 
-    function updateUI() {
-        const lang = document.getElementById('langSel').value;
-        const t = dictionary[lang];
-        document.getElementById('l-lang').innerText = t.l; document.getElementById('l-aud').innerText = t.a;
-        document.getElementById('l-img').innerText = t.i; document.getElementById('l-mat').innerText = t.m;
-        document.getElementById('l-mode').innerText = t.md; document.getElementById('l-dict').innerText = t.d;
-        document.getElementById('f-mat-txt').innerText = t.f; document.getElementById('f-aud-txt').innerText = t.f; document.getElementById('f-img-txt').innerText = t.f;
-        const m = document.getElementById('modeSel'); 
-        m.innerHTML = '';
-        m.add(new Option(t.s, 'study')); m.add(new Option(t.ms, 'master')); m.add(new Option(t.t, 'test'));
-        gen();
+    const sel = document.getElementById('langSelect');
+    Object.keys(langs).forEach(k => sel.add(new Option(langs[k].name, k)));
+    sel.value = 'ru';
+
+    function translateUI() {
+        const t = langs[sel.value];
+        ['lang','mode','slow','materials','al','il'].forEach(id => document.getElementById('l-'+id).innerText = t[id]);
+        ['study','master','test'].forEach(m => document.getElementById('opt-'+m).innerText = t[m]);
+        ['f-univ-btn', 'f-aud-btn', 'f-img-btn'].forEach(id => {
+            const el = document.getElementById(id);
+            if (!el.hasAttribute('data-active')) el.innerText = "📁 " + t.select;
+        });
     }
 
-    function clrTxt(id) { const lang = document.getElementById('langSel').value; document.getElementById(id).innerText = dictionary[lang].f; }
-
-    function gen() {
-        const aud = document.getElementById('u-aud').value.trim();
-        const img = document.getElementById('u-img').value.trim();
-        const mode = document.getElementById('modeSel').value;
-        const lang = document.getElementById('langSel').value;
-        const dict = document.getElementById('u-dict').value.trim();
-        const mat = document.getElementById('u-mat').value.trim();
-
-        if(img) document.getElementById('cover').style.backgroundImage = `url(${img})`;
-        
-        // ВСЕГДА генерируем строку, чтобы не было ошибки "Error loading"
-        const p = new URLSearchParams({ aud, img, mode, lang, dict, mat }).toString();
-        const iframeStr = '<iframe src="https://studio-player.pro/?' + p + '" width="100%" height="750" frameborder="0" allow="autoplay; fullscreen" allowfullscreen="true" style="border:0; width:1px; min-width:100%;"></iframe>';
-        document.getElementById('res-code').value = iframeStr;
+    function updateFileName(input) {
+        const btn = document.getElementById(input.id + '-btn');
+        if (input.files.length > 0) {
+            btn.innerText = "📄 " + input.files[0].name;
+            btn.setAttribute('data-active', 'true');
+            btn.style.color = "#d4af37";
+        }
     }
 
-    function toggleD(type) {
-        document.body.classList.toggle(type + '-open');
-        const url = type === 'dict' ? document.getElementById('u-dict').value : document.getElementById('u-mat').value;
-        document.getElementById('dr-iframe').src = url || 'about:blank';
+    function clearF(id) {
+        const el = document.getElementById(id); el.value = '';
+        if(id.startsWith('f-')) {
+            const btn = document.getElementById(id + '-btn');
+            btn.removeAttribute('data-active');
+            btn.innerText = "📁 " + langs[sel.value].select;
+            btn.style.color = "#78a1c4";
+        }
     }
 
-    function loadSide(type) { toggleD(type); }
-    function copyC() { document.getElementById('res-code').select(); document.execCommand('copy'); }
+    function togglePlay() { if(audio.src) audio.paused ? audio.play() : audio.pause(); }
+    function rewind(v) { audio.currentTime += v; }
+    function manualSeek(v) { audio.currentTime = v; }
+    function toggleSlow() { audio.playbackRate = (audio.playbackRate === 1 ? 0.8 : 1); }
+    function setI(u) { const c = document.getElementById('cover'); c.style.backgroundImage = u ? `url(${u})` : 'none'; c.innerHTML = u ? '' : '<span class="gold-icon">♫</span>'; }
 
-    const sel = document.getElementById('langSel');
-    Object.keys(dictionary).forEach(k => sel.add(new Option(dictionary[k].n, k)));
-    sel.value = 'de'; updateUI();
+    audio.ontimeupdate = () => {
+        const pr = document.getElementById('prog'); pr.max = audio.duration || 0; pr.value = audio.currentTime;
+        const f = s => new Date(s * 1000).toISOString().substr(14, 5);
+        document.getElementById('time-display').innerText = `${f(audio.currentTime)} / ${f(audio.duration || 0)}`;
+    };
+    audio.onplay = () => document.getElementById('play-btn').innerText = '⏸';
+    audio.onpause = () => document.getElementById('play-btn').innerText = '▶';
+    
+    translateUI();
 </script>
 </body>
 </html>
